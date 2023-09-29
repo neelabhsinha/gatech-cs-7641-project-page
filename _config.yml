@@ -1,5 +1,7 @@
-title: Cayman theme
-description: Cayman is a clean, responsive theme for GitHub Pages.
+title: CS 7641 Group 36
+description: Machine Learning Project on FIFA World Cup Prediction
 show_downloads: true
 google_analytics:
 theme: jekyll-theme-cayman
+github:
+  url: https://www.cs7641group36.gatech.edu
