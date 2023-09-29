@@ -2,6 +2,18 @@
 layout: default
 ---
 
-# FIFA World Cup Prediction
+# Introduction
 
-Greetings! Test.
+Quick explanation of the problem, literature review, dataset and its features
+
+# Problem Definition
+
+Problem, motivation
+
+# Methods
+
+Algorithms
+
+# Potential Results and Discussion
+
+ML metrics, qualitative outcomes expected
