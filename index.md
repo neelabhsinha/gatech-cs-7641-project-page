@@ -6,7 +6,7 @@ layout: default
 
 The FIFA World Cup is the most popular sports event in the world (shown below [5]).
 
-![Importance of Football](/assets/images/intro.jpg)
+![Importance of Football](/gatech-cs-7641-project-page/assets/images/intro.jpg)
  
 For our project, we will be predicting the FIFA World Cup championship by iteratively predicting results of each game. Our prediction model will in turn benefit the following industries:
 1. Sports betting
@@ -31,7 +31,7 @@ In literature([1],[2],[3]) this is usually modelled as a classification problem 
 - [FIFA World Rankings (Kaggle)](https://www.kaggle.com/datasets/cashncarry/fifaworldranking){:target="_blank"} 
 
 The dataset features are described in the following figure -
-![Dataset Summary](/assets/images/dataset.png)
+![Dataset Summary](/gatech-cs-7641-project-page/assets/images/dataset.png)
 
 
 ## **Usage**:
@@ -59,7 +59,7 @@ In addition, dimensionality reduction will be used to preprocess all unsupervise
 
 ## Overall Pipeline
 
-![Overall Pipeline](/assets/images/pipeline.png)
+![Overall Pipeline](/gatech-cs-7641-project-page/assets/images/pipeline.png)
 
 We propose this end-to-end FIFA world cup suite where with the given historical and ranking data, we generate groups using clustering, and use it to build tournament compatible match schedules. The supervised classifiers then predict all matches iteratively through the tournament until the winner is decided.
 
