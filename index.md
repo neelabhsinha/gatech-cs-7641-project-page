@@ -4,11 +4,11 @@ layout: default
 
 # Introduction
 
-The FIFA World Cup is the most popular sports event in the world (shown below [5]).
+FIFA World Cup is the most popular sports event in the world (shown below [5]).
 
 ![Importance of Football](/gatech-cs-7641-project-page/assets/images/intro.jpg)
  
-For our project, we will be predicting the FIFA World Cup championship by iteratively predicting results of each game. Our prediction model will in turn benefit the following industries:
+We will be predicting the FIFA World Cup championship by iteratively predicting results of each game. Our prediction model will in turn benefit the following industries:
 1. Sports betting
 2. Data driven predictions and analysis for media
 4. Decision-making for sports teams and merchandise.
