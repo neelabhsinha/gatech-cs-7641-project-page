@@ -73,6 +73,8 @@ Adding all these features we end up with 25 features .
 
 We derive the target labels based upon the difference in "**home_goals**" and "**away_goals**" .The outcome thus can be Win for the either team or a tie (total 3 making this a multi-class classification problem.). We one-hot encode the target labels as well into the following three-labels : "**home_team_win**" , **away_team_win** and **draw** .
 
+In our case we found that ties are very difficult to predict using the features and the dataset that we have in our possession. For the midsem portion we have simplified this to a binary prediction problem. In our case we have grouped the **draw** labels with **away_team_win** .In other words a draw counts as loss for the home team.
+
 ### Feature Selection 
 For Feature selection we have implemented and tried the following :
 1. Forward Feature Selection
@@ -96,11 +98,19 @@ For our purpose we limit the number of PCA components to be enough to recover 95
 
 For our midterm we have performed and analysed various techniques in Supervised Classification to aid us with the "**Outcome Prediction**" problem as stated in Problem Definition. We estimate the winner/loser/match-ties using probabilities . As such we start with **Logistic Regression** which generates  a simple ,linear and efficient model for our classification problem . The model thus obtained is very interpretable.However there is an inherent assumption of the target variable being linearly dependent upon the features which need not be true for actual real-world data . 
 
-We then employ ensemble learning methods such as : **Random Forest** and **Gradient boosting** .These are more advanced methods using Decision Trees as the fundamental model . The data is split in a way to maximize parameters such as "**Information Gain**","**Gini index**" or "**Chi-Square Index**" . Random forest is an ensemble of independent decision trees which helps with the overfitting problem inherent to decision trees .The classification is done using majority voting. Gradient boosting is another ensemble technqiue where the trees are not independent but used sequentially in a way to minimize the errors in the previous trees . Parameters to be maximised under these techniques are sensitive to both linear and nonlinear dependence of the target class on features and as such may uncover complex relationships between them. The drawback however is these models are complex and hence are computationally expensive to train.Also the models obtained lack the interpretability offered by Logisitic Regression models. **Do we use the feature importance thing for any feature selection here?**
+We then employ **Decision Trees** ensemble learning methods such as : **Random Forest** and **Gradient boosting** .The ensemble learners are more advanced methods using Decision Trees as the fundamental model . The data in all of these is split in a way to maximize parameters such as "**Information Gain**","**Gini index**" or "**Chi-Square Index**" . Random forest is an ensemble of independent decision trees which helps with the overfitting problem inherent to decision trees .The classification is done using majority voting. Gradient boosting is another ensemble technqiue where the trees are not independent but used sequentially in a way to minimize the errors in the previous trees . Parameters to be maximised under these techniques are sensitive to both linear and nonlinear dependence of the target class on features and as such may uncover complex relationships between them. The drawback however is these models are complex and hence are computationally expensive to train.Also the models obtained lack the interpretability offered by Logisitic Regression models. 
 
+We also try **SVM** on the problem to see the performance.
+Unless specified all these techniques were executed using methods from the **scikit-learn** library.
+## Filtering the tournament types
+
+**The part about excluding friendlies and other tournament types should go here**
+
+## Tuning Hyperparameters
+In all the learning algorithms employed we have a fixed set of hyperparameters(example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc.) . In order to find these we use **RandomizedSearchCV** followed by **GridSearchCV** . Since this is a multivariate optimization problem ,randomly sampling the parameters helps us narrow down the search space.We conduct **GridSearch** in the proximity of the best performing solution of **RandomizedSearchcv** to fine tune a better performing set of hyperparameters.
 ## Semi-supervised Learning
 #### Motivation 
-
+**Show the non-converging learning curve**
 #### Artificial Data Generation
 
 
@@ -109,43 +119,82 @@ We then employ ensemble learning methods such as : **Random Forest** and **Gradi
 ### Logistic Regression
 
 #### Training
-**80-20 split/PCA etc.**
 **Learning Curve**
+
+![LogisticRegressionCurve](./assets/images/learning_curve_logistic_regression.png)
 #### Tuning Parameters
-**GridSearch?**
+**GridSearch results?**
 
+#### ConfusionMatrix 
 
+![LogisticRegressionCM](./assets/images/confusion_matrix_lr.png)
+
+#### ROC/AUC Curve
+![LogisticRegressionROC](./assets/images/roc_curve_lr.png)
 ### Decision Trees
 #### Training
-**80-20 split/PCA etc.**
 **Learning Curve**
+
+![DTCurve](./assets/images/learning_curve_dt.png)
 #### Tuning Parameters
-**GridSearch?/ tree depth**
+**Best Param?**
 
+#### ConfusionMatrix 
 
+![DTCM](./assets/images/confusion_matrix_dt.png)
+
+#### ROC/AUC Curve
+
+![DTROC](./assets/images/roc_curve_dt.png)
 ### Random Forest
 #### Training
-**80-20 split/PCA etc.**
 **Learning Curve**
+
+![RFCurve](./assets/images/learning_curve_rf.png)
 #### Tuning Parameters
 **GridSearch?/number of trees/each tree depth**
 
+
+#### ConfusionMatrix 
+
+![RFCM](./assets/images/confusion_matrix_rf.png)
+
+#### ROC/AUC Curve
+
+![RFROC](./assets/images/roc_curve_rf.png)
 ### Gradient Boosting
 #### Training
-**80-20 split/PCA etc.**
 **Learning Curve**
+
+![GBCurve](./assets/images/learning_curve_gb.png)
 #### Tuning Parameters
 **GridSearch?/number of trees/each tree depth**
+
+
+#### ConfusionMatrix 
+
+![GBCM](./assets/images/confusion_matrix_gb.png)
+
+#### ROC/AUC Curve
+![GBROC](./assets/images/roc_curve_gb.png)
+
 ### SVM
 #### Training
-**80-20 split/PCA etc.**
+
 **Learning Curve**
+
+![SVMCurve](./assets/images/learning_curve_svm.png)
 #### Tuning Parameters
 **GridSearch**
 
 
+#### ConfusionMatrix 
 
+![SVMCM](./assets/images/confusion_matrix_svm.png)
 
+#### ROC/AUC Curve
+
+![GBROC](./assets/images/roc_curve_svm.png)
 ## Tournament Simulation
 
 **Flowchart showing the structure of tournament code?**
@@ -157,32 +206,41 @@ We then employ ensemble learning methods such as : **Random Forest** and **Gradi
 
 
 # Mid-Term Results and Discussion
+## Effect of Feature Selection and PCA
 
+**Discuss the effects of different feature-subsets on accuracy** 
 ## Outcome Prediction
+
+### Semi-supervised Learning Results
+
+
+
+### Supervised Learning Results
 We analyse the performance of the various classification schemes on our dataset as shown below:
 
-| Classification Scheme        | Accuracy | Precision | Recall | F-1 score |
-| ---------------------------- | -------- | --------- | ------ | --------- |
-| Logistic Regression(Softmax) |          |           |        |           |
-| Random Forest                |          |           |        |           |
-| Gradient Boosting            |          |           |        |           |
+| Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
+| ------------------ | -------- | --------- | ------ | --------- | ------- |
+| LogisticRegression | 0.73     | 0.73      | 0.73   | 0.73      | 0.19    |
+| DecisionTree       | 0.70     | 0.71      | 0.70   | 0.70      | 0.24    |
+| RandomForest       | 0.72     | 0.72      | 0.72   | 0.72      | 0.21    |
+| GradientBoosting   | 0.72     | 0.73      | 0.72   | 0.72      | 0.20    |
+| SVM                | 0.73     | 0.73      | 0.73   | 0.73      | 0.20    |
 
 
-**ROC-AUC Curves?** 
 
 
-**Ties**
 
 
-**Semisupervised learning**
+
 
 ### Scopes for improvement 
-If we are satisfied , let's compare with some state of the art techniques/old papers to see where we stand.
+
+**Let's discuss this first once all data is on report**
 
 
 # Post-MidTerm Work
 We will work on the unsupervised portion of the problem related to clustering and enhance our tournament simulations and see if the unsupervised clustering technqiues offer us some new insight that helps us calibrate our supervised classifiers better.
-
+**Put the clustering discussion here if you wanna copy proposal stuff**
 # Project Timeline and Responsibilities
 
 ## Contributions for the Mid-Term
