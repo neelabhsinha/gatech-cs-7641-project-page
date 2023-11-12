@@ -7,7 +7,7 @@ layout: default
 FIFA World Cup is the most popular sports event in the world (shown below [5]).
 
 ![Importance of Football](./assets/images/intro.jpg)
-[comment:]<> /gatech-cs-7641-project-page/assets/images/intro.jpg Replace before push
+
 
 We will be predicting the FIFA World Cup championship by iteratively predicting results of each game. Our prediction model will in turn benefit the following industries:
 1. Sports betting
@@ -15,8 +15,7 @@ We will be predicting the FIFA World Cup championship by iteratively predicting 
 4. Decision-making for sports teams and merchandise.
 3. Driving fan excitement and discussions online.
 
-## Preliminary Literature Survey
-
+## Related Work
 
 The problem of predicting game outcomes especially in Football(also called Soccer in NA) is usually handled as a classification problem.([4],[6]) Techniques ranging from logistic regression([4]) to RNN/Deep Learning([6]) have been employed for this task. Furthermore the problem of outcome prediction is very similar across other team based games  ([1],[3]).A comprehensive survey of the use of techniques across the various sports is shown in [3].
 
@@ -32,6 +31,14 @@ The notion of "accuracy" in our case is also quantified by additional metrics li
 
 For our project we handle **Group Prediction** by using **Outcome Prediction** iteratively to predict the matches within the group.
 
+For the midsem checkpoint we will be covering **Outcome Prediction** in the report.
+
+## Overall Pipeline
+
+![Overall Pipeline](./assets/images/pipeline.png)
+
+
+Currently we have constructed the supervised portion of the end-to-end FIFA world cup suite to aid with the "**Group Prediction**" part in the problem definition.
 
 # Dataset
 ## **Sources**:
@@ -42,7 +49,7 @@ We use the datasets listed below:
 
 The dataset features are described in the following figure -
 ![Dataset Summary](./assets/images/dataset.png)
-[comment:]<> /gatech-cs-7641-project-page/assets/images/dataset.png
+
 
 Of these the datasets **All International Matches** and **FIFA World Rankings** are used to train and test our Machine Learning schemes ,while the dataset **Soccer World Cup Data** is used to prepare and run tournament simulations.
 ## **Data Preparation**
@@ -52,9 +59,12 @@ For our supervised task the relevant datasets we are interested in are "**Match 
 After this we join the two datasets columnwise such that relevant attributes of the teams are placed side by side with the match data .Of these we retain the following features for our analysis:
 ![New Features](./assets/images/basefeatures.png)
 ### **Data Cleaning**
-We didn't find any incomplete entries.Some country's team names have changed in the past . For the purpose of tracking their historical data we rename them with the present name. (**All of them are in the 90s**)  
+We didn't find any incomplete entries.Some country's team names have changed in the past . For the purpose of tracking their historical data we have renamed them with the present name.  
 ### **Feature Extraction**
-For the outcome prediction task \\( \hat{G}(T_i,T_j)\\) we extract features that adequately describe each team \\(T_i\\) as well as any head-to-head relationship between them. Our guiding assumption for this is that the past performance of two teams reasonably exhibits their attributes for the match in question.([7]).The past time window for our analysis is 5 years,meaning we look at the performance of the teams as a whole and against each other for the last 5 years . So we based on domain understanding we add the following features :
+For the outcome prediction task \\( \hat{G}(T_i,T_j)\\) we extract features that adequately describe each team \\(T_i\\) as well as any head-to-head relationship between them. Our guiding assumption for this is that the past performance of two teams reasonably exhibits their attributes for the match in question.([7]).In our case the past time window for analysis is 15 matches. We chose this value after trying out various combinations of time-based time windows(in years) and number of matches .
+**Attach the U/inverted shaped curve where n = 15 matches becomes the extrema**
+ 
+So  based on domain understanding we add the following features :
 
 ![New Features](./assets/images/newfeatures.png)
 
@@ -64,45 +74,77 @@ Adding all these features we end up with 25 features .
 We derive the target labels based upon the difference in "**home_goals**" and "**away_goals**" .The outcome thus can be Win for the either team or a tie (total 3 making this a multi-class classification problem.). We one-hot encode the target labels as well into the following three-labels : "**home_team_win**" , **away_team_win** and **draw** .
 
 ### Feature Selection 
-**What did we end up using?**
+For Feature selection we have implemented and tried the following :
+1. Forward Feature Selection
+2. PCA and
+3. Feature Importance using Ensemble Learners
 
+We compare the performance of our learning techniques with features arising from these technqiues as well as the raw features.
 ### **PCA**
-PCA is an unsupervised technique . We perform PCA on our data both for the purposes of preliminary visualization and for Dimensionality reduction to reduce the number of features required by our classifiers. However since PCA is agnostic to target labels we monitor the effect of performing PCA on training. On one hand PCA might help us by getting rid of highly correlated features ,it can also worsen the performance if some features have some non linear predictive relation with the target labels and they get truncated. 
-For our purpose we limit the number of PCA components to be enough to recover 95% (**Confirm**) of the total variance. In our case the number of PCA components thus obtained comes out to be 15 . **Graph total explained variance vs nfeatures** 
+ We perform PCA on our data both for the purposes of preliminary visualization and for Dimensionality reduction to reduce the number of features required by our classifiers. However since PCA is agnostic to target labels we monitor the effect of performing PCA on training. On one hand PCA might help us by getting rid of highly correlated features ,it can also worsen the performance if some features have some non linear predictive relation with the target labels and they get truncated. 
+For our purpose we limit the number of PCA components to be enough to recover 95% (**Confirm**) of the total variance. In our case the number of PCA components thus obtained comes out to be 5 . **Graph total explained variance/related rubric vs nfeatures** 
+
+# EDA 
+
+
 
 
 # Methods
+
+--Please rewrite as per your train of thought --
+
+
 For our midterm we have performed and analysed various techniques in Supervised Classification to aid us with the "**Outcome Prediction**" problem as stated in Problem Definition. We estimate the winner/loser/match-ties using probabilities . As such we start with **Logistic Regression** which generates  a simple ,linear and efficient model for our classification problem . The model thus obtained is very interpretable.However there is an inherent assumption of the target variable being linearly dependent upon the features which need not be true for actual real-world data . 
 
 We then employ ensemble learning methods such as : **Random Forest** and **Gradient boosting** .These are more advanced methods using Decision Trees as the fundamental model . The data is split in a way to maximize parameters such as "**Information Gain**","**Gini index**" or "**Chi-Square Index**" . Random forest is an ensemble of independent decision trees which helps with the overfitting problem inherent to decision trees .The classification is done using majority voting. Gradient boosting is another ensemble technqiue where the trees are not independent but used sequentially in a way to minimize the errors in the previous trees . Parameters to be maximised under these techniques are sensitive to both linear and nonlinear dependence of the target class on features and as such may uncover complex relationships between them. The drawback however is these models are complex and hence are computationally expensive to train.Also the models obtained lack the interpretability offered by Logisitic Regression models. **Do we use the feature importance thing for any feature selection here?**
-## Supervised Methods (for match outcome prediction)
+
+## Semi-supervised Learning
+#### Motivation 
+
+#### Artificial Data Generation
+
+
+## Supervised Learning
 
 ### Logistic Regression
-**Did we end up using softmax?**
+
 #### Training
 **80-20 split/PCA etc.**
+**Learning Curve**
 #### Tuning Parameters
 **GridSearch?**
+
+
+### Decision Trees
+#### Training
+**80-20 split/PCA etc.**
+**Learning Curve**
+#### Tuning Parameters
+**GridSearch?/ tree depth**
+
 
 ### Random Forest
 #### Training
 **80-20 split/PCA etc.**
+**Learning Curve**
 #### Tuning Parameters
 **GridSearch?/number of trees/each tree depth**
 
 ### Gradient Boosting
 #### Training
 **80-20 split/PCA etc.**
+**Learning Curve**
 #### Tuning Parameters
 **GridSearch?/number of trees/each tree depth**
+### SVM
+#### Training
+**80-20 split/PCA etc.**
+**Learning Curve**
+#### Tuning Parameters
+**GridSearch**
 
 
-## Overall Pipeline
 
-![Overall Pipeline](./assets/images/pipeline.png)
-[comment:]<> /gatech-cs-7641-project-page/assets/images/pipeline.png
-
-We have constructed the supervised portion of the end-to-end FIFA world cup suite to aid with the "**Group Prediction**" part in the problem definition.
 
 ## Tournament Simulation
 
@@ -130,6 +172,9 @@ We analyse the performance of the various classification schemes on our dataset 
 
 
 **Ties**
+
+
+**Semisupervised learning**
 
 ### Scopes for improvement 
 If we are satisfied , let's compare with some state of the art techniques/old papers to see where we stand.
