@@ -6,13 +6,19 @@ layout: default
 
 FIFA World Cup is the most popular sports event in the world (shown below [5]).
 
-![Importance of Football](/gatech-cs-7641-project-page/assets/images/intro.jpg)
- 
+![Importance of Football](./assets/images/intro.jpg)
+
+
 We will be predicting the FIFA World Cup championship by iteratively predicting results of each game. Our prediction model will in turn benefit the following industries:
 1. Sports betting
 2. Data driven predictions and analysis for media
 4. Decision-making for sports teams and merchandise.
-3. Driving fan excitement and discussions online
+3. Driving fan excitement and discussions online.
+
+## Related Work
+
+The problem of predicting game outcomes especially in Football(also called Soccer in NA) is usually handled as a classification problem.([4],[6]) Techniques ranging from logistic regression([4]) to RNN/Deep Learning([6]) have been employed for this task. Furthermore the problem of outcome prediction is very similar across other team based games  ([1],[3]).A comprehensive survey of the use of techniques across the various sports is shown in [3].
+
 
 # Problem Definition
 
@@ -21,78 +27,231 @@ A tournament \\(\mathcal{T}(\boldsymbol{T},\boldsymbol{G},\boldsymbol{T_b})\\) i
 1. **Outcome prediction** : \\(\forall G(T_i,T_j) \in \boldsymbol{G}\\) we predict \\(\hat{G}(T_i,T_j)\\) accurately.
 2. **Group Prediction** : Given  \\(\boldsymbol{T_b}\\) we predict \\(\hat{T}_{b+1}\\) and beyond. 
 
-In literature([1],[2],[3]) this is usually modelled as a classification problem ,but there are exceptions([4]). 
+The notion of "accuracy" in our case is also quantified by additional metrics like **cross-entropy** , **precision** , **recall** and **F1-score** (discussed below in the metrics section.)
 
+For our project we handle **Group Prediction** by using **Outcome Prediction** iteratively to predict the matches within the group.
+
+For the midsem checkpoint we will be covering **Outcome Prediction** in the report.
+
+## Overall Pipeline
+
+![Overall Pipeline](./assets/images/pipeline.png)
+
+
+Currently we have constructed the supervised portion of the end-to-end FIFA world cup suite to aid with the "**Group Prediction**" part in the problem definition.
 
 # Dataset
 ## **Sources**:
+We use the datasets listed below:
 - [Soccer World Cup Data (Kaggle)](https://www.kaggle.com/datasets/shilongzhuang/soccer-world-cup-challenge/){:target="_blank"} 
 - [All International Matches (Kaggle)](https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017?select=results.csv){:target="_blank"} 
 - [FIFA World Rankings (Kaggle)](https://www.kaggle.com/datasets/cashncarry/fifaworldranking){:target="_blank"} 
 
 The dataset features are described in the following figure -
-![Dataset Summary](/gatech-cs-7641-project-page/assets/images/dataset.png)
+![Dataset Summary](./assets/images/dataset.png)
 
 
-## **Usage**:
-1. Clubbing teams into different ‘groups’ based on relevant extracted  features.
-2. Combining these with FIFA rankings and historical data to predict the winner.
+Of these the datasets **All International Matches** and **FIFA World Rankings** are used to train and test our Machine Learning schemes ,while the dataset **Soccer World Cup Data** is used to prepare and run tournament simulations.
+## **Data Preparation**
+
+For our supervised task the relevant datasets we are interested in are "**Match level**" data named "**InternationalMatches.csv**" and "**FifaRankings.csv**". "**InternationalMatches.csv**" contains the match outcome data for matches from 1872 to 2023 with the attributes shown in the picture above. For our task we limit ourselves to data between 2000(--Change w.r.t optimal window size) and 2022,right before the FIFA world cup . "**FifaRankings.csv**" contains the daily FIFA rankings and points of teams with additional attributes shown in the diagram above. This data goes from 1991 to 2023. However we limit ourselves to the same time frame as the match level data. 
+
+After this we join the two datasets columnwise such that relevant attributes of the teams are placed side by side with the match data .Of these we retain the following features for our analysis:
+![New Features](./assets/images/basefeatures.png)
+### **Data Cleaning**
+We didn't find any incomplete entries.Some country's team names have changed in the past . For the purpose of tracking their historical data we have renamed them with the present name.  
+### **Feature Extraction**
+For the outcome prediction task \\( \hat{G}(T_i,T_j)\\) we extract features that adequately describe each team \\(T_i\\) as well as any head-to-head relationship between them. Our guiding assumption for this is that the past performance of two teams reasonably exhibits their attributes for the match in question.([7]).In our case the past time window for analysis is 15 matches. We chose this value after trying out various combinations of time-based time windows(in years) and number of matches .
+**Attach the U/inverted shaped curve where n = 15 matches becomes the extrema**
+ 
+So  based on domain understanding we add the following features :
+
+![New Features](./assets/images/newfeatures.png)
+
+In our case the feature "**tournament**" is categorical and can have multiple labels and as such we perform one-hot-encoding to avoid having our classifiers assign any ordinality among these. So we split it into three features namely : "**is_friendly**" , "**is_qualifier**" and **is_tournament** exactly one of which can be 1 at a time and the rest remain 0. The "**Neutral**" attributed is renamed to "**home_match_for_home_team**" for interpretability. 
+Adding all these features we end up with 25 features . 
+
+We derive the target labels based upon the difference in "**home_goals**" and "**away_goals**" .The outcome thus can be Win for the either team or a tie (total 3 making this a multi-class classification problem.). We one-hot encode the target labels as well into the following three-labels : "**home_team_win**" , **away_team_win** and **draw** .
+
+In our case we found that ties are very difficult to predict using the features and the dataset that we have in our possession. For the midsem portion we have simplified this to a binary prediction problem. In our case we have grouped the **draw** labels with **away_team_win** .In other words a draw counts as loss for the home team.
+
+### Feature Selection 
+For Feature selection we have implemented and tried the following :
+1. Forward Feature Selection
+2. PCA and
+3. Feature Importance using Ensemble Learners
+
+We compare the performance of our learning techniques with features arising from these technqiues as well as the raw features.
+### **PCA**
+ We perform PCA on our data both for the purposes of preliminary visualization and for Dimensionality reduction to reduce the number of features required by our classifiers. However since PCA is agnostic to target labels we monitor the effect of performing PCA on training. On one hand PCA might help us by getting rid of highly correlated features ,it can also worsen the performance if some features have some non linear predictive relation with the target labels and they get truncated. 
+For our purpose we limit the number of PCA components to be enough to recover 95% (**Confirm**) of the total variance. In our case the number of PCA components thus obtained comes out to be 5 . **Graph total explained variance/related rubric vs nfeatures** 
+
+# EDA 
+
+
+
 
 # Methods
 
-## Supervised Methods (for match outcome prediction)
-
-We propose using classification algorithms for Outcome Prediction. Given a match fixture, we extract relevant features and use it to predict the teams' winning probabilities using:
-
-- Logistic Regression: Simple, linear, but efficient and more interpretable model that can yield predictions assuming linear dependency on features.
-- Random Forest: Advanced, more expensive and less interpretable, but can capture complex relationships effectively hence allowing us to study the trade-off between factors.
-
-## Unsupervised Methods (for grouping)
-
-We create ideal groups (A, B, C...) from the set of teams for fair competition. The fixed number of FIFA groups fixes the number of clusters, hence requiring clustering methods with a known initial number of clusters.
-The following shall be explored -
-- KMeans (Hard Clustering): Simple, efficient and more interpretable method to create groups
-- Gaussian Mixture Model (Soft Clustering): Computationally expensive, but with flexible cluster shapes and responsibilities which can provide more insights on the groupings
-
-In addition, dimensionality reduction will be used to preprocess all unsupervised and supervised models for effective feature selection.
+--Please rewrite as per your train of thought --
 
 
-## Overall Pipeline
+For our midterm we have performed and analysed various techniques in Supervised Classification to aid us with the "**Outcome Prediction**" problem as stated in Problem Definition. We estimate the winner/loser/match-ties using probabilities . As such we start with **Logistic Regression** which generates  a simple ,linear and efficient model for our classification problem . The model thus obtained is very interpretable.However there is an inherent assumption of the target variable being linearly dependent upon the features which need not be true for actual real-world data . 
 
-![Overall Pipeline](/gatech-cs-7641-project-page/assets/images/pipeline.png)
+We then employ **Decision Trees** ensemble learning methods such as : **Random Forest** and **Gradient boosting** .The ensemble learners are more advanced methods using Decision Trees as the fundamental model . The data in all of these is split in a way to maximize parameters such as "**Information Gain**","**Gini index**" or "**Chi-Square Index**" . Random forest is an ensemble of independent decision trees which helps with the overfitting problem inherent to decision trees .The classification is done using majority voting. Gradient boosting is another ensemble technqiue where the trees are not independent but used sequentially in a way to minimize the errors in the previous trees . Parameters to be maximised under these techniques are sensitive to both linear and nonlinear dependence of the target class on features and as such may uncover complex relationships between them. The drawback however is these models are complex and hence are computationally expensive to train.Also the models obtained lack the interpretability offered by Logisitic Regression models. 
 
-We propose this end-to-end FIFA world cup suite where with the given historical and ranking data, we generate groups using clustering, and use it to build tournament compatible match schedules. The supervised classifiers then predict all matches iteratively through the tournament until the winner is decided.
+We also try **SVM** on the problem to see the performance.
+Unless specified all these techniques were executed using methods from the **scikit-learn** library.
+## Filtering the tournament types
 
-# Potential Results and Discussion
+**The part about excluding friendlies and other tournament types should go here**
 
-A thorough study comparing the models’ performance, efficiency and robustness is planned. 
+## Tuning Hyperparameters
+In all the learning algorithms employed we have a fixed set of hyperparameters(example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc.) . In order to find these we use **RandomizedSearchCV** followed by **GridSearchCV** . Since this is a multivariate optimization problem ,randomly sampling the parameters helps us narrow down the search space.We conduct **GridSearch** in the proximity of the best performing solution of **RandomizedSearchcv** to fine tune a better performing set of hyperparameters.
+## Semi-supervised Learning
+#### Motivation 
+**Show the non-converging learning curve**
+#### Artificial Data Generation
 
-Classification methods’  metrics:
-- cross-entropy loss (match-level, tournament stage level, and overall)
-- accuracy
-- precision 
-- recall
-- F1 score
-- ROC-AUC
 
- Clustering algorithms’ metrics:
-- Silhouette Score
-- Davies-Bouldin Index
-- Calinski-Harabasz Index
+## Supervised Learning
 
-We are using internal measures only, as we care only about the quality of groups generated rather than comparing to any ground truth (which need not be fixed in our use case).
+### Logistic Regression
 
+#### Training
+**Learning Curve**
+
+![LogisticRegressionCurve](./assets/images/learning_curve_logistic_regression.png)
+#### Tuning Parameters
+**GridSearch results?**
+
+#### ConfusionMatrix 
+
+![LogisticRegressionCM](./assets/images/confusion_matrix_lr.png)
+
+#### ROC/AUC Curve
+![LogisticRegressionROC](./assets/images/roc_curve_lr.png)
+### Decision Trees
+#### Training
+**Learning Curve**
+
+![DTCurve](./assets/images/learning_curve_dt.png)
+#### Tuning Parameters
+**Best Param?**
+
+#### ConfusionMatrix 
+
+![DTCM](./assets/images/confusion_matrix_dt.png)
+
+#### ROC/AUC Curve
+
+![DTROC](./assets/images/roc_curve_dt.png)
+### Random Forest
+#### Training
+**Learning Curve**
+
+![RFCurve](./assets/images/learning_curve_rf.png)
+#### Tuning Parameters
+**GridSearch?/number of trees/each tree depth**
+
+
+#### ConfusionMatrix 
+
+![RFCM](./assets/images/confusion_matrix_rf.png)
+
+#### ROC/AUC Curve
+
+![RFROC](./assets/images/roc_curve_rf.png)
+### Gradient Boosting
+#### Training
+**Learning Curve**
+
+![GBCurve](./assets/images/learning_curve_gb.png)
+#### Tuning Parameters
+**GridSearch?/number of trees/each tree depth**
+
+
+#### ConfusionMatrix 
+
+![GBCM](./assets/images/confusion_matrix_gb.png)
+
+#### ROC/AUC Curve
+![GBROC](./assets/images/roc_curve_gb.png)
+
+### SVM
+#### Training
+
+**Learning Curve**
+
+![SVMCurve](./assets/images/learning_curve_svm.png)
+#### Tuning Parameters
+**GridSearch**
+
+
+#### ConfusionMatrix 
+
+![SVMCM](./assets/images/confusion_matrix_svm.png)
+
+#### ROC/AUC Curve
+
+![GBROC](./assets/images/roc_curve_svm.png)
+## Tournament Simulation
+
+**Flowchart showing the structure of tournament code?**
+
+**Bracket Predictions?**
+
+**One full tournament run**
+
+
+
+# Mid-Term Results and Discussion
+## Effect of Feature Selection and PCA
+
+**Discuss the effects of different feature-subsets on accuracy** 
+## Outcome Prediction
+
+### Semi-supervised Learning Results
+
+
+
+### Supervised Learning Results
+We analyse the performance of the various classification schemes on our dataset as shown below:
+
+| Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
+| ------------------ | -------- | --------- | ------ | --------- | ------- |
+| LogisticRegression | 0.73     | 0.73      | 0.73   | 0.73      | 0.19    |
+| DecisionTree       | 0.70     | 0.71      | 0.70   | 0.70      | 0.24    |
+| RandomForest       | 0.72     | 0.72      | 0.72   | 0.72      | 0.21    |
+| GradientBoosting   | 0.72     | 0.73      | 0.72   | 0.72      | 0.20    |
+| SVM                | 0.73     | 0.73      | 0.73   | 0.73      | 0.20    |
+
+
+
+
+
+
+
+
+### Scopes for improvement 
+
+**Let's discuss this first once all data is on report**
+
+
+# Post-MidTerm Work
+We will work on the unsupervised portion of the problem related to clustering and enhance our tournament simulations and see if the unsupervised clustering technqiues offer us some new insight that helps us calibrate our supervised classifiers better.
+**Put the clustering discussion here if you wanna copy proposal stuff**
 # Project Timeline and Responsibilities
 
-## Contributions for the Proposal
+## Contributions for the Mid-Term
 
 | Team Member | Responsibility |
 |-------------|----------------|
-| Ananya Sharma | Ideation, Dataset Extraction and Unsupervised methods |
-| Apoorva Sinha | Ideation, Problem Definition and Expected Results |
-| Neelabh Sinha | Ideation, Supervised Methods and Expected Results |
-| Snigdha Verma | Ideation, Dataset Extraction and Unsupervised methods |
-| Yu- Chen Lin | Ideation, Introduction, Background and Literature Survey |
+| Ananya Sharma |  |
+| Apoorva Sinha | |
+| Neelabh Sinha |  |
+| Snigdha Verma |  |
+| Yu- Chen Lin |  |
 
 ## Project Gantt Chart
 
@@ -104,4 +263,5 @@ The gantt chart covering complete timeline and responsibility distribution can b
 3. T. Horvat, J. Job, R. Logozar, and . Livada. A data-driven machine learning algorithm for predicting the outcomes of nba games.Symmetry, 15(4), 2023.
 4. D. Prasetio and D. Harlili. Predicting football match results with logistic regression.2016 International Conference On Advanced Informatics: Concepts, Theory And Application (ICAICTA), pages 1–5, 2016.
 5. https://www.statista.com/chart/28766/global-reach-and-tv-viewership-of-the-fifa-world-cup
-
+6. E. Tiwari, P. Sardar and S. Jain, "Football Match Result Prediction Using Neural Networks and Deep Learning," 2020 8th       International Conference on Reliability, Infocom Technologies and Optimization (Trends and Future Directions) (ICRITO), Noida, India, 2020, pp. 229-231, doi: 10.1109/ICRITO48877.2020.9197811.
+7. Dixon, M.J. and Coles, S.G. (1997), Modelling Association Football Scores and Inefficiencies in the Football Betting Market. Journal of the Royal Statistical Society: Series C (Applied Statistics), 46: 265-280. https://doi.org/10.1111/1467-9876.00065
