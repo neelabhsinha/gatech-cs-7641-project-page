@@ -8,9 +8,9 @@ FIFA World Cup is the most popular sports event in the world. As shown in the im
 
 ![Importance of Football](./assets/images/intro.jpg)
 
-FIFA World Cup happens once in four years with 32 participating teams. First, 8 groups are created with 4 teams each. In every group, each team plays the other once. 3 points are given to the winner, 0 to the loser, and 1-1 point is shared in case of a draw. After this, top 2 teams from each group qualify for knockout stages. In knockouts, each team plays a match per stage where winner moves to the next stage and loser is elliminated, until one team ultimately wins the tournament.
+FIFA World Cup happens once in four years with 32 participating teams. First, 8 groups are created with 4 teams each. In every group, each team plays the other once. 3 points are given to the winner, 0 to the loser, and 1-1 point is shared in case of a draw. After this, top 2 teams from each group qualify for knockout stages. In knockouts, each team plays a match per stage where winner moves to the next stage and loser is eliminated, until one team ultimately wins the tournament.
 
-In this work, we predict the FIFA World Cup matches and ideal grouping of teams for a good tournament using past match results and rankings. In summary, we use these data to generate relevant features, and then use multiple supervised techniques to predict winner of a match. Apart from real data, we also explore creating fictious matches and use semi-supervised learning in an attempt to improve the models. Alongside match predictions, we also use unsupervised clustering techniques to create groups that can facilitate a good tournament. Through these two processes, we create an end-to-end tool that can take in participating teams, build groups, predict results of matches and ultimately, predict a complete tournament.
+In this work, we predict the FIFA World Cup matches and ideal grouping of teams for a good tournament using past match results and rankings. In summary, we use these data to generate relevant features, and then use multiple supervised techniques to predict winner of a match. Apart from real data, we also explore creating fictitious matches and use semi-supervised learning in an attempt to improve the models. Alongside match predictions, we also use unsupervised clustering techniques to create groups that can facilitate a good tournament. Through these two processes, we create an end-to-end tool that can take in participating teams, build groups, predict results of matches and ultimately, predict a complete tournament.
 
 # Related Work
 
@@ -33,7 +33,7 @@ For the midsem checkpoint we will be covering **Outcome Prediction** in the repo
 
 ## Outcome Prediction
 
-To predict the outcomes, we first extract features for a match fixture using domain knowledge and correlation analysis. For the two teams playing, we take last $n_{ind}$ individual matches in FIFA World Cups and qualifiers against any team. From this, we extract number of wins, goals scored (mean, std), goals conceded (mean, std), mean of rank difference of this team against oppositons played for each team. Alongside this, we also take in the current rank of the teams. After this, we take last $n_{h2h}$ matches against each other in the same category and extract difference in rank of the teams and mean, std of goals scored by both the teams. We also take a categorical variable of whether the match is at a neutral venue, and if it is a world cup match or a qualifier. Complete set of features are described in the table below. To get the labels, we compare the goals scored for both teams in the match and if home_team scores more, we make the label = 1, otherwise 0.
+To predict the outcomes, we first extract features for a match fixture using domain knowledge and correlation analysis. For the two teams playing, we take last $n_{ind}$ individual matches in FIFA World Cups and qualifiers against any team. From this, we extract number of wins, goals scored (mean, std), goals conceded (mean, std), mean of rank difference of this team against oppositions played for each team. Alongside this, we also take in the current rank of the teams. After this, we take last $n_{h2h}$ matches against each other in the same category and extract difference in rank of the teams and mean, std of goals scored by both the teams. We also take a categorical variable of whether the match is at a neutral venue, and if it is a world cup match or a qualifier. Complete set of features are described in the table below. To get the labels, we compare the goals scored for both teams in the match and if home_team scores more, we make the label = 1, otherwise 0.
 
 ![New Features](./assets/images/basefeatures.png)
 
@@ -43,14 +43,13 @@ As we realize that the number of data can also be a cause of concern since World
 
 ## Group Prediction
 
-We will do the unsupervised group prediction post midsem of this project.
+We will do the unsupervised group prediction post mid-sem of this project.
 
 ## Overall Pipeline
 
 ![Overall Pipeline](./assets/images/pipeline.png)
 
 # Implementation Details
-
 
 ## Dataset
 We use the datasets listed below:
@@ -65,8 +64,6 @@ Of these the datasets **All International Matches** and **FIFA World Rankings** 
 
 **TODO: Add EDA graphs here and discuss**
 
-## Outcome Prediction
-
 ### Hyperparameters
 
 TODO: TBA
@@ -74,10 +71,18 @@ TODO: TBA
 ### Model Training
 
 TODO: TBA
-
 # Experiments
 
 ## Outcome Prediction
+For our midterm assessment, we undertook a comprehensive exploration of various techniques within Supervised Classification to address the **Outcome Prediction** problem, as outlined in the Problem Definition. Our primary objective was to predict winners, losers, and match ties through probability estimation.
+
+We initiated our analysis with **Logistic Regression**, which provides a straightforward, linear, and efficient model for our classification task. However, it assumes a linear dependence of the target variable on the features, a condition not always applicable in real-world data. To address this, we fine-tuned the model using hyperparameters such as **C**, **Solver**, and **Penalty**.
+
+To enhance accuracy, we then applied ensemble learning methods based on Decision Trees, including **Random Forest** and **Gradient Boosting**. These techniques leverage Decision Trees as their fundamental model, with data splitting optimized for parameters such as **Information Gain**, **Gini Index**, or **Chi-Square Index**. Random Forest mitigates over-fitting by combining independent decision trees through majority voting. On the other hand, Gradient Boosting sequentially utilizes trees to minimize errors from previous iterations. While these methods excel in capturing both linear and nonlinear dependencies, they introduce complexity and computational expense during training. Furthermore, the resulting models lack the interpretability found in Logistic Regression models.
+
+Additionally, we explored the application of Support Vector Machines (SVM) to evaluate its performance on the given problem. SVM operates by finding the optimal hyperplane that separates different classes in the feature space while maximizing the margin between them. The hyperplane is determined by support vectors, which are the data points closest to the decision boundary. In the context of our problem, SVM was employed to discern patterns and relationships within the data to predict outcomes. It is particularly effective when dealing with complex relationships and non-linear dependencies between features and the target class.
+
+All these techniques were implemented using functions from the scikit-learn library.
 
 ## Results
 
@@ -94,10 +99,11 @@ TODO: TBA
 
 ## Filtering the tournament types
 
-**The part about excluding friendlies and other tournament types should go here**
+While we initially began with data from various types of matches, including individual matches in FIFA World Cups, qualifiers, friendlies and others. However, this did not yield favorable accuracy in prediction. Thus, based on our domain knowledge of the tournament, we reduced the dataset to consider only including individual matches in FIFA World Cups and qualifiers. This yielded better results across all employed methods.
 
 ## Tuning Hyperparameters
-In all the learning algorithms employed we have a fixed set of hyperparameters(example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc.) . In order to find these we use **RandomizedSearchCV** followed by **GridSearchCV** . Since this is a multivariate optimization problem ,randomly sampling the parameters helps us narrow down the search space.We conduct **GridSearch** in the proximity of the best performing solution of **RandomizedSearchcv** to fine tune a better performing set of hyperparameters.
+In all the learning algorithms employed we have a fixed set of hyperparameters (example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc). In order to find these we use **RandomizedSearchCV** followed by **GridSearchCV**. Since this is a multivariate optimization problem, randomly sampling the parameters helps us narrow down the search space. We begin with a RandomizedSearchCV in order to get to the vicinity of hyperparameters. Then, we conduct **GridSearch** in the proximity of the best performing solution of **RandomizedSearchCV** to fine tune a better performing set of hyperparameters. This helps to reduce the computational cost and complexity of a full grid search, while increasing the accuracy around a **RandomizedSearchCV**.
+
 ## Semi-supervised Learning
 #### Motivation 
 **Show the non-converging learning curve**
@@ -113,7 +119,10 @@ In all the learning algorithms employed we have a fixed set of hyperparameters(e
 
 ![LogisticRegressionCurve](./assets/images/learning_curve_logistic_regression.png)
 #### Tuning Parameters
-**GridSearch results?**
+Hyperparameter tuning for Logistic Regression yielded the best parameters as:
+ Solver: This hyperparameter signifies the algorithm to use in the optimization problem. Our tuning revealed 'saga' as the best Solver.
+ Penalty: This hyperparameter specifies the norm of the penalty, which is tuned to 'l2' for our model.
+ C: This hyperparameter signifies inverse of regularization strength and is tuned to 1.0 for our model.
 
 #### ConfusionMatrix 
 
@@ -121,6 +130,7 @@ In all the learning algorithms employed we have a fixed set of hyperparameters(e
 
 #### ROC/AUC Curve
 ![LogisticRegressionROC](./assets/images/roc_curve_lr.png)
+
 ### Decision Trees
 #### Training
 **Learning Curve**
@@ -215,12 +225,6 @@ We analyse the performance of the various classification schemes on our dataset 
 | RandomForest       | 0.72     | 0.72      | 0.72   | 0.72      | 0.21    |
 | GradientBoosting   | 0.72     | 0.73      | 0.72   | 0.72      | 0.20    |
 | SVM                | 0.73     | 0.73      | 0.73   | 0.73      | 0.20    |
-
-
-
-
-
-
 
 
 ### Scopes for improvement 
