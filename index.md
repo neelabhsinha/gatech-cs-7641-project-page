@@ -4,7 +4,7 @@ layout: default
 
 # Introduction
 
-FIFA World Cup is the most popular sports event in the world. As shown in the image below [5], its viewership surpasses all other major sports events. With the popularity of the sport comes the importance of predictive analysis of the tournament and its matches. A lot of industries seek a good prediction at different levels for these matches for different purposes like sports betting, media and broadcast analysis, tactical decision making, driving online fan excitement.
+FIFA World Cup is the most popular sports event in the world. As shown in the image below [5], its viewership surpasses all other major sports events. With the popularity of the sport comes the importance of predictive analysis of the tournament and its matches. A lot of industries seek a good prediction at different levels for these matches for different purposes like sports betting, media and broadcast analysis, tactical decision making, driving online fan excitement. 
 
 ![Importance of Football](./assets/images/intro.jpg)
 
@@ -33,9 +33,11 @@ For the midsem checkpoint we will be covering **Outcome Prediction** in the repo
 
 ## Outcome Prediction
 
-To predict the outcomes, we first extract features for a match fixture using domain knowledge and correlation analysis. For the two teams playing, we take last $n_{ind}$ individual matches in FIFA World Cups and qualifiers against any team. From this, we extract number of wins, goals scored (mean, std), goals conceded (mean, std), mean of rank difference of this team against oppositons played for each team. Alongside this, we also take in the current rank of the teams. After this, we take last $n_{h2h}$ matches against each other in the same category and extract difference in rank of the teams and mean, std of goals scored by both the teams. We also take a categorical variable of whether the match is at a neutral venue, and if it is a world cup match or a qualifier.
+To predict the outcomes, we first extract features for a match fixture using domain knowledge and correlation analysis. For the two teams playing, we take last $n_{ind}$ individual matches in FIFA World Cups and qualifiers against any team. From this, we extract number of wins, goals scored (mean, std), goals conceded (mean, std), mean of rank difference of this team against oppositons played for each team. Alongside this, we also take in the current rank of the teams. After this, we take last $n_{h2h}$ matches against each other in the same category and extract difference in rank of the teams and mean, std of goals scored by both the teams. We also take a categorical variable of whether the match is at a neutral venue, and if it is a world cup match or a qualifier. Complete set of features are described in the table below. To get the labels, we compare the goals scored for both teams in the match and if home_team scores more, we make the label = 1, otherwise 0.
 
-Using these features, we train build a binary classifier using Logistic Regression [X], Support Vector Machines [X], Decision Tree [X], Random Forest [X], and Gradient Boost [X] to predict the probability of team A winning the match. In working with the classifier, we also experiment with forward feature selection [X] to select best features from the initial feature set, and also do Principal Component Analysis [X] to reduce the dimensionality of features. 
+![New Features](./assets/images/basefeatures.png)
+
+Using these features, we train build a binary classifier using various algorithms. To start, we implement Logistic Regression [X], Support Vector Machines [X], Decision Tree [X] which are simple, efficient and interpretable algorithms and them move to ensemble methods like , Random Forest [X], and Gradient Boost [X] to predict the probability of team A winning the match. In working with the classifier, we also experiment with forward feature selection [X] to select best features from the initial feature set, and also do Principal Component Analysis [X] to reduce the dimensionality of features. We tune all these methods by defining a search space and using Randomized Search using k-fold cross validation.
 
 As we realize that the number of data can also be a cause of concern since World Cups happen once every four years in a space of two months, we generate artificial permutation of matches of two teams. To do this, we take a date $D$ and team playing a match on that day $T_D$. Then, for each team $T_D^i$ in this set, if the team has played against a set $T_R$ teams in the past, we generate a match between $T_D^i$ and each member of set $T_R - T_D$. After this, we select a random $N_A$ set of matches from this and follow a semi-supervised learning [X] approach to train the classifier using labeled real matches and this unlabeled artificial matches to predict the results.
 
@@ -47,11 +49,10 @@ We will do the unsupervised group prediction post midsem of this project.
 
 ![Overall Pipeline](./assets/images/pipeline.png)
 
+# Implementation Details
 
-Currently we have constructed the supervised portion of the end-to-end FIFA world cup suite to aid with the "**Group Prediction**" part in the problem definition.
 
-# Dataset
-## **Sources**:
+## Dataset
 We use the datasets listed below:
 - [Soccer World Cup Data (Kaggle)](https://www.kaggle.com/datasets/shilongzhuang/soccer-world-cup-challenge/){:target="_blank"} 
 - [All International Matches (Kaggle)](https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017?select=results.csv){:target="_blank"} 
@@ -60,58 +61,37 @@ We use the datasets listed below:
 The dataset features are described in the following figure -
 ![Dataset Summary](./assets/images/dataset.png)
 
-
 Of these the datasets **All International Matches** and **FIFA World Rankings** are used to train and test our Machine Learning schemes ,while the dataset **Soccer World Cup Data** is used to prepare and run tournament simulations.
-## **Data Preparation**
 
-For our supervised task the relevant datasets we are interested in are "**Match level**" data named "**InternationalMatches.csv**" and "**FifaRankings.csv**". "**InternationalMatches.csv**" contains the match outcome data for matches from 1872 to 2023 with the attributes shown in the picture above. For our task we limit ourselves to data between 2000(--Change w.r.t optimal window size) and 2022,right before the FIFA world cup . "**FifaRankings.csv**" contains the daily FIFA rankings and points of teams with additional attributes shown in the diagram above. This data goes from 1991 to 2023. However we limit ourselves to the same time frame as the match level data. 
+**TODO: Add EDA graphs here and discuss**
 
-After this we join the two datasets columnwise such that relevant attributes of the teams are placed side by side with the match data .Of these we retain the following features for our analysis:
-![New Features](./assets/images/basefeatures.png)
-### **Data Cleaning**
-We didn't find any incomplete entries.Some country's team names have changed in the past . For the purpose of tracking their historical data we have renamed them with the present name.  
-### **Feature Extraction**
-For the outcome prediction task \\( \hat{G}(T_i,T_j)\\) we extract features that adequately describe each team \\(T_i\\) as well as any head-to-head relationship between them. Our guiding assumption for this is that the past performance of two teams reasonably exhibits their attributes for the match in question.([7]).In our case the past time window for analysis is 15 matches. We chose this value after trying out various combinations of time-based time windows(in years) and number of matches .
-**Attach the U/inverted shaped curve where n = 15 matches becomes the extrema**
- 
-So  based on domain understanding we add the following features :
+## Outcome Prediction
 
-![New Features](./assets/images/newfeatures.png)
+### Hyperparameters
 
-In our case the feature "**tournament**" is categorical and can have multiple labels and as such we perform one-hot-encoding to avoid having our classifiers assign any ordinality among these. So we split it into three features namely : "**is_friendly**" , "**is_qualifier**" and **is_tournament** exactly one of which can be 1 at a time and the rest remain 0. The "**Neutral**" attributed is renamed to "**home_match_for_home_team**" for interpretability. 
-Adding all these features we end up with 25 features . 
+TODO: TBA
 
-We derive the target labels based upon the difference in "**home_goals**" and "**away_goals**" .The outcome thus can be Win for the either team or a tie (total 3 making this a multi-class classification problem.). We one-hot encode the target labels as well into the following three-labels : "**home_team_win**" , **away_team_win** and **draw** .
+### Model Training
 
-In our case we found that ties are very difficult to predict using the features and the dataset that we have in our possession. For the midsem portion we have simplified this to a binary prediction problem. In our case we have grouped the **draw** labels with **away_team_win** .In other words a draw counts as loss for the home team.
+TODO: TBA
 
-### Feature Selection 
-For Feature selection we have implemented and tried the following :
-1. Forward Feature Selection
-2. PCA and
-3. Feature Importance using Ensemble Learners
+# Experiments
 
-We compare the performance of our learning techniques with features arising from these technqiues as well as the raw features.
-### **PCA**
- We perform PCA on our data both for the purposes of preliminary visualization and for Dimensionality reduction to reduce the number of features required by our classifiers. However since PCA is agnostic to target labels we monitor the effect of performing PCA on training. On one hand PCA might help us by getting rid of highly correlated features ,it can also worsen the performance if some features have some non linear predictive relation with the target labels and they get truncated. 
-For our purpose we limit the number of PCA components to be enough to recover 95% (**Confirm**) of the total variance. In our case the number of PCA components thus obtained comes out to be 5 . **Graph total explained variance/related rubric vs nfeatures** 
+## Outcome Prediction
 
-# EDA 
+## Results
+
+## Impact of Forward Feature Selection
+
+## Impact of Principal Component Analysis
+
+## Impact of Semi-supervised Learning
+
+## Tournament Simulation
 
 
+<!-- ----To see further (Neelabh's checkpoint) ------ -->
 
-
-# Methods
-
---Please rewrite as per your train of thought --
-
-
-For our midterm we have performed and analysed various techniques in Supervised Classification to aid us with the "**Outcome Prediction**" problem as stated in Problem Definition. We estimate the winner/loser/match-ties using probabilities . As such we start with **Logistic Regression** which generates  a simple ,linear and efficient model for our classification problem . The model thus obtained is very interpretable.However there is an inherent assumption of the target variable being linearly dependent upon the features which need not be true for actual real-world data . 
-
-We then employ **Decision Trees** ensemble learning methods such as : **Random Forest** and **Gradient boosting** .The ensemble learners are more advanced methods using Decision Trees as the fundamental model . The data in all of these is split in a way to maximize parameters such as "**Information Gain**","**Gini index**" or "**Chi-Square Index**" . Random forest is an ensemble of independent decision trees which helps with the overfitting problem inherent to decision trees .The classification is done using majority voting. Gradient boosting is another ensemble technqiue where the trees are not independent but used sequentially in a way to minimize the errors in the previous trees . Parameters to be maximised under these techniques are sensitive to both linear and nonlinear dependence of the target class on features and as such may uncover complex relationships between them. The drawback however is these models are complex and hence are computationally expensive to train.Also the models obtained lack the interpretability offered by Logisitic Regression models. 
-
-We also try **SVM** on the problem to see the performance.
-Unless specified all these techniques were executed using methods from the **scikit-learn** library.
 ## Filtering the tournament types
 
 **The part about excluding friendlies and other tournament types should go here**
