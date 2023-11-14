@@ -62,11 +62,17 @@ The dataset features are described in the following figure -
 
 Of these the datasets **All International Matches** and **FIFA World Rankings** are used to train and test our Machine Learning schemes ,while the dataset **Soccer World Cup Data** is used to prepare and run tournament simulations.
 
+
+### Filtering the tournament types
+
+While we initially began with data from various types of matches, including individual matches in FIFA World Cups, qualifiers, friendlies and others. However, this did not yield favorable accuracy in prediction. Thus, based on our domain knowledge of the tournament, we reduced the dataset to consider only including individual matches in FIFA World Cups and qualifiers. This yielded better results across all employed methods.
+
 **TODO: Add EDA graphs here and discuss**
 
 ### Hyperparameters
 
-TODO: TBA
+In all the learning algorithms employed we have a fixed set of hyperparameters (example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc). In order to find these we use **RandomizedSearchCV** followed by **GridSearchCV**. Since this is a multivariate optimization problem, randomly sampling the parameters helps us narrow down the search space. We begin with a RandomizedSearchCV in order to get to the vicinity of hyperparameters. Then, we conduct **GridSearch** in the proximity of the best performing solution of **RandomizedSearchCV** to fine tune a better performing set of hyperparameters. This helps to reduce the computational cost and complexity of a full grid search, while increasing the accuracy around a **RandomizedSearchCV**.
+
 
 ### Model Training
 
@@ -84,139 +90,19 @@ Additionally, we explored the application of Support Vector Machines (SVM) to ev
 
 All these techniques were implemented using functions from the scikit-learn library.
 
-## Results
-
 ## Impact of Forward Feature Selection
 
 ## Impact of Principal Component Analysis
 
 ## Impact of Semi-supervised Learning
-
-## Tournament Simulation
-
-
-<!-- ----To see further (Neelabh's checkpoint) ------ -->
-
-## Filtering the tournament types
-
-While we initially began with data from various types of matches, including individual matches in FIFA World Cups, qualifiers, friendlies and others. However, this did not yield favorable accuracy in prediction. Thus, based on our domain knowledge of the tournament, we reduced the dataset to consider only including individual matches in FIFA World Cups and qualifiers. This yielded better results across all employed methods.
-
-## Tuning Hyperparameters
-In all the learning algorithms employed we have a fixed set of hyperparameters (example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc). In order to find these we use **RandomizedSearchCV** followed by **GridSearchCV**. Since this is a multivariate optimization problem, randomly sampling the parameters helps us narrow down the search space. We begin with a RandomizedSearchCV in order to get to the vicinity of hyperparameters. Then, we conduct **GridSearch** in the proximity of the best performing solution of **RandomizedSearchCV** to fine tune a better performing set of hyperparameters. This helps to reduce the computational cost and complexity of a full grid search, while increasing the accuracy around a **RandomizedSearchCV**.
-
-## Semi-supervised Learning
 #### Motivation 
 **Show the non-converging learning curve**
 #### Artificial Data Generation
 
+## Results
 
-## Supervised Learning
-
-### Logistic Regression
-
-#### Training
-**Learning Curve**
-
-![LogisticRegressionCurve](./assets/images/learning_curve_logistic_regression.png)
-#### Tuning Parameters
-Hyperparameter tuning for Logistic Regression yielded the best parameters as:
- Solver: This hyperparameter signifies the algorithm to use in the optimization problem. Our tuning revealed 'saga' as the best Solver.
- Penalty: This hyperparameter specifies the norm of the penalty, which is tuned to 'l2' for our model.
- C: This hyperparameter signifies inverse of regularization strength and is tuned to 1.0 for our model.
-
-#### ConfusionMatrix 
-
-![LogisticRegressionCM](./assets/images/confusion_matrix_lr.png)
-
-#### ROC/AUC Curve
-![LogisticRegressionROC](./assets/images/roc_curve_lr.png)
-
-### Decision Trees
-#### Training
-**Learning Curve**
-
-![DTCurve](./assets/images/learning_curve_dt.png)
-#### Tuning Parameters
-**Best Param?**
-
-#### ConfusionMatrix 
-
-![DTCM](./assets/images/confusion_matrix_dt.png)
-
-#### ROC/AUC Curve
-
-![DTROC](./assets/images/roc_curve_dt.png)
-### Random Forest
-#### Training
-**Learning Curve**
-
-![RFCurve](./assets/images/learning_curve_rf.png)
-#### Tuning Parameters
-**GridSearch?/number of trees/each tree depth**
-
-
-#### ConfusionMatrix 
-
-![RFCM](./assets/images/confusion_matrix_rf.png)
-
-#### ROC/AUC Curve
-
-![RFROC](./assets/images/roc_curve_rf.png)
-### Gradient Boosting
-#### Training
-**Learning Curve**
-
-![GBCurve](./assets/images/learning_curve_gb.png)
-#### Tuning Parameters
-**GridSearch?/number of trees/each tree depth**
-
-
-#### ConfusionMatrix 
-
-![GBCM](./assets/images/confusion_matrix_gb.png)
-
-#### ROC/AUC Curve
-![GBROC](./assets/images/roc_curve_gb.png)
-
-### SVM
-#### Training
-
-**Learning Curve**
-
-![SVMCurve](./assets/images/learning_curve_svm.png)
-#### Tuning Parameters
-**GridSearch**
-
-
-#### ConfusionMatrix 
-
-![SVMCM](./assets/images/confusion_matrix_svm.png)
-
-#### ROC/AUC Curve
-
-![GBROC](./assets/images/roc_curve_svm.png)
-## Tournament Simulation
-
-**Flowchart showing the structure of tournament code?**
-
-**Bracket Predictions?**
-
-**One full tournament run**
-
-
-
-# Mid-Term Results and Discussion
-## Effect of Feature Selection and PCA
-
-**Discuss the effects of different feature-subsets on accuracy** 
-## Outcome Prediction
-
-### Semi-supervised Learning Results
-
-
-
-### Supervised Learning Results
-We analyse the performance of the various classification schemes on our dataset as shown below:
+### Supervised Learning Statistics
+We analyze the performance of the various classification schemes on our dataset as shown below:
 
 | Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
 | ------------------ | -------- | --------- | ------ | --------- | ------- |
@@ -226,11 +112,111 @@ We analyse the performance of the various classification schemes on our dataset 
 | GradientBoosting   | 0.72     | 0.73      | 0.72   | 0.72      | 0.20    |
 | SVM                | 0.73     | 0.73      | 0.73   | 0.73      | 0.20    |
 
+#### Logistic Regression
+_Tuning Parameters_
+Hyperparameter tuning for Logistic Regression yielded the best parameters as:
+ Solver: This hyperparameter signifies the algorithm to use in the optimization problem. Our tuning revealed 'saga' as the best Solver.
+ Penalty: This hyperparameter specifies the norm of the penalty, which is tuned to 'l2' for our model.
+ C: This hyperparameter signifies inverse of regularization strength and is tuned to 1.0 for our model.
 
-### Scopes for improvement 
+_Learning Curve_
+
+![LogisticRegressionCurve](./assets/images/learning_curve_logistic_regression.png)
+
+_ConfusionMatrix_
+
+![LogisticRegressionCM](./assets/images/confusion_matrix_lr.png)
+
+_ROC/AUC Curve_
+
+![LogisticRegressionROC](./assets/images/roc_curve_lr.png)
+
+#### Decision Trees
+_Tuning Parameters_
+
+Best Param?
+
+_Learning Curve_
+
+![DTCurve](./assets/images/learning_curve_dt.png)
+
+_ConfusionMatrix_
+
+![DTCM](./assets/images/confusion_matrix_dt.png)
+
+_ROC/AUC Curve_
+
+![DTROC](./assets/images/roc_curve_dt.png)
+
+#### Random Forest
+
+_Tuning Parameters_
+
+GridSearch?/number of trees/each tree depth
+
+_Learning Curve_
+
+![RFCurve](./assets/images/learning_curve_rf.png)
+
+
+_ConfusionMatrix_
+
+![RFCM](./assets/images/confusion_matrix_rf.png)
+
+_ROC/AUC Curve_
+
+![RFROC](./assets/images/roc_curve_rf.png)
+
+#### Gradient Boosting
+
+_Tuning Parameters_
+
+GridSearch?/number of trees/each tree depth
+
+_Learning Curve_
+
+![GBCurve](./assets/images/learning_curve_gb.png)
+
+_ConfusionMatrix_
+
+![GBCM](./assets/images/confusion_matrix_gb.png)
+
+_ROC/AUC Curve_
+
+![GBROC](./assets/images/roc_curve_gb.png)
+
+#### SVM
+
+_Tuning Parameters_
+
+GridSearch
+
+_Learning Curve_
+
+![SVMCurve](./assets/images/learning_curve_svm.png)
+
+_ConfusionMatrix_
+
+![SVMCM](./assets/images/confusion_matrix_svm.png)
+
+_ROC/AUC Curve_
+
+![GBROC](./assets/images/roc_curve_svm.png)
+
+
+
+### Tournament Simulation
+**Flowchart showing the structure of tournament code?**
+
+**Bracket Predictions?**
+
+**One full tournament run**
+
+<!-- ----To see further (Neelabh's checkpoint) ------ -->
+
+## Scopes for improvement 
 
 **Let's discuss this first once all data is on report**
-
 
 # Post-MidTerm Work
 We will work on the unsupervised portion of the problem related to clustering and enhance our tournament simulations and see if the unsupervised clustering technqiues offer us some new insight that helps us calibrate our supervised classifiers better.
