@@ -23,13 +23,11 @@ The problem of predicting game outcomes especially in Football (also called Socc
 A tournament \\(\mathcal{T}(\boldsymbol{T},\boldsymbol{G},\boldsymbol{T_b})\\) is a set of teams \\(\boldsymbol{T}\\) participating in games \\(\boldsymbol{G}\\) (either a winner or tie (only in  group stage)) over stages \\(\boldsymbol{b} = 0,1,2,...\\) ,with a set of (\\(\boldsymbol{T_b}\\)) teams qualifying to play them. Our goal is:
 
 1. **Outcome prediction** : \\(\forall G(T_i,T_j) \in \boldsymbol{G}\\) we predict \\(\hat{G}(T_i,T_j)\\) accurately.
-2. **Group Prediction** : Given  \\(\boldsymbol{T_b}\\) we predict \\(\hat{T}_{b+1}\\) and beyond. 
+2. **Group Prediction** : Given  \\(\boldsymbol{T}\\) teams, we predict 8 groups \\(\boldsymbol{g}\\) such that \\(|g_i| = 4\\) and each \\(T_i -> g_i\\). 
 
 The notion of "accuracy" in our case is also quantified by additional metrics like **cross-entropy** , **precision** , **recall** and **F1-score** (discussed below in the metrics section.)
 
-For our project we handle **Group Prediction** by using **Outcome Prediction** iteratively to predict the matches within the group.
-
-For the midsem checkpoint we will be covering **Outcome Prediction** in the report.
+For the mid-sem checkpoint we will be covering **Outcome Prediction** in the report.
 
 ## 3.2 Overall Pipeline
 
@@ -140,6 +138,14 @@ We believe that the ensemble learning methods are not performing as well because
 Forward feature selection is the iterative addition of features to the model one at a time. The process starts with an empty set of features and gradually incorporates the most relevant features based on certain criteria, in our case the increase in accuracy of the model based on the set of features being added. Post forward feature selection, we found the accuracy of each model to be drop by 5%. Due to this, we did not move forward with employing this technique. A possible hypothesis and explanation for this behavior, is that individual features had lesser contribution to the accuracy of the model, and were enforced by other features of the dataset, thus leading to better accuracy without forward feature selection.
 
 ## 5.3 Impact of Principal Component Analysis
+To analyze the impact of dimensionality reduction, we perform PCA on our features and run logistic regression and random forest on the features after doing PCA. After that, we select first five and first fifteen components and train the models using this data. The accuracy of each of these are given below -
+
+|Method              |n=5     |n=15    |raw features|
+|--------------------|--------|--------|------------|
+|Logistic Regression | 71.75% | 72.70% | 73.16%     |
+|Random Forest       | 72.76% | 72.53% | 71.86%     |
+
+Interestingly, the trend in both algorithms are opposite. With logistic regression, more features/components yield more accuracy and with random forest, the vice versa. This probably suggests that Logistic Regression, which was working optimally before starts to suffer when we reduce the dimensions as it gets less information, whereas Random Forest, which was probably over-fitting originally despite hyperparameter tuning now is able to better learn the representation with reducing dimensionality. However, even with n=5 (best case), it is not able to outperform logistic regression with raw features.
 
 ## 5.4 Impact of Semi-supervised Learning
 #### 5.4.1 Motivation 
