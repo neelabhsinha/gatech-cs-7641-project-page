@@ -82,20 +82,26 @@ We analyze the performance of the various classification schemes on our dataset 
 
 | Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
 | ------------------ | -------- | --------- | ------ | --------- | ------- |
-| LogisticRegression | 0.73     | 0.73      | 0.73   | 0.73      | 0.19    |
-| DecisionTree       | 0.70     | 0.71      | 0.70   | 0.70      | 0.24    |
-| RandomForest       | 0.72     | 0.72      | 0.72   | 0.72      | 0.21    |
-| GradientBoosting   | 0.72     | 0.73      | 0.72   | 0.72      | 0.20    |
-| SVM                | 0.73     | 0.73      | 0.73   | 0.73      | 0.20    |
+| Logistic Regression| 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
+| SVM                | 73.16%   | 73.23%    | 73.16% | 73.15%    | 0.81    |
+| Decision Tree      | 70.29%   | 70.49%    | 70.29% | 70.25%    | 0.76    |
+| Random Forest      | 71.86%   | 72.00%    | 71.86% | 71.84%    | 0.79    |
+| Gradient Boosting  | 71.41%   | 71.94%    | 71.41% | 71.29%    | 0.79    |
+
+From the above table, we can see that logistic regression and support vector machines outperform other models. On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made my random search.
+
+We believe that the ensemble learning methods are not performing as well because the data is not enriched and complex enough to train them. This is also probably why we observed that for higher range of search space, the model over-fits and for relaxing the range to reduce over-fitting, the results are not as expected.
 
 ### 5.1.1 Confusion Matrix
 <p>
   <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionCM" width="350"/>
   <img src="./assets/images/confusion_matrix_dt.png" alt="DTCM" width="350"/>
-  <img src="./assets/images/confusion_matrix_rf.png" alt="RFCM" width="350"/>
  </p>
  <p>
+   <img src="./assets/images/confusion_matrix_rf.png" alt="RFCM" width="350"/>
   <img src="./assets/images/confusion_matrix_gb.png" alt="GBCM" width="350"/>
+ </p>
+ <p>
   <img src="./assets/images/confusion_matrix_svm.png" alt="SVMCM" width="350"/>
  </p>
 
@@ -105,12 +111,14 @@ We analyze the performance of the various classification schemes on our dataset 
 <p>
   <img src="./assets/images/learning_curve_logistic_regression.png" alt="LogisticRegressionCurve" width="350"/>
   <img src="./assets/images/learning_curve_dt.png" alt="DTCurve" width="350"/>
-  <img src="./assets/images/learning_curve_rf.png" alt="RFCurve" width="350"/>
  </p>
  <p>
+   <img src="./assets/images/learning_curve_rf.png" alt="RFCurve" width="350"/>
   <img src="./assets/images/learning_curve_gb.png" alt="GBCurve" width="350"/>
-  <img src="./assets/images/learning_curve_svm.png" alt="SVMCurve" width="350"/>
  </p>
+ <p>
+   <img src="./assets/images/learning_curve_svm.png" alt="SVMCurve" width="350"/>
+ </p
 
 
 ### 5.1.3 ROC/AUC Curve
@@ -118,11 +126,14 @@ We analyze the performance of the various classification schemes on our dataset 
 <p>
   <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionROC" width="350"/>
   <img src="./assets/images/roc_curve_dt.png" alt="DTROC" width="350"/>
-  <img src="./assets/images/roc_curve_rf.png" alt="RFROC" width="350"/>
+  
  </p>
  <p>
+ <img src="./assets/images/roc_curve_rf.png" alt="RFROC" width="350"/>
   <img src="./assets/images/roc_curve_gb.png" alt="GBROC" width="350"/>
-  <img src="./assets/images/roc_curve_svm.png" alt="SVMROC" width="350"/>
+ </p>
+  <p>
+ <img src="./assets/images/roc_curve_svm.png" alt="SVMROC" width="350"/>
  </p>
 
 ## 5.2 Impact of Forward Feature Selection
@@ -132,9 +143,36 @@ Forward feature selection is the iterative addition of features to the model one
 ## 5.3 Impact of Principal Component Analysis
 
 ## 5.4 Impact of Semi-supervised Learning
-#### Motivation 
-**Show the non-converging learning curve**
-#### Artificial Data Generation
+#### 5.4.1 Motivation 
+
+#### 5.4.2 Artificial Data Generation
+#### 5.4.3 Semi-supervised vs Supervised Learning
+##### 5.4.3.1 Model Performance
+We analyze the performance of the various classification schemes on our dataset as shown below:
+
+| Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
+| ------------------ | -------- | --------- | ------ | --------- | ------- |
+| Logistic Regression Supervised | 0.73     | 0.73      | 0.73   | 0.73      | 0.19    |
+| Logistic Regression Semi Supervised | 0.71     | 0.72      | 0.71   | 0.71      | 0.79    |
+
+| Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
+| ------------------ | -------- | --------- | ------ | --------- | ------- |
+| RandomForest Supervised      | 0.72     | 0.72      | 0.72   | 0.72      | 0.21    |
+| RandomForest Semi Supervised      | 0.72     | 0.72      | 0.72   | 0.72      | 0.77    |
+
+
+##### 5.4.3.2 Confusion Matrix
+<p>
+  <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionSupervised" width="350"/>
+  <img src="./assets/images/semi_supervised/confusion_matrix_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
+ </p>
+
+##### 5.4.3.3 ROC/AUC Curve
+ <p>
+  <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionSupervised" width="350"/>
+  <img src="./assets/images/semi_supervised/roc_curve_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
+ </p>
+
 
 
 
@@ -197,30 +235,26 @@ We have analysed the results using 5 different models:
 
 <!-- ----To see further (Neelabh's checkpoint) ------ -->
 
-# 6 Scopes for improvement 
-
-**Let's discuss this first once all data is on report**
-
-# 7 Post-MidTerm Work
+# 6 Post-MidTerm Work
 We will work on the unsupervised portion of the problem related to clustering and enhance our tournament simulations and see if the unsupervised clustering technqiues offer us some new insight that helps us calibrate our supervised classifiers better.
 **Put the clustering discussion here if you wanna copy proposal stuff**
-# 8 Project Timeline and Responsibilities
+# 7 Project Timeline and Responsibilities
 
-## 8.1 Contributions for the Mid-Term
+## 7.1 Contributions for the Mid-Term
 
 | Team Member | Responsibility |
 |-------------|----------------|
-| Ananya Sharma |  |
-| Apoorva Sinha | |
-| Neelabh Sinha |  |
-| Snigdha Verma |  |
-| Yu- Chen Lin |  |
+| Ananya Sharma |  Logistic Regression, Results Evaluation and Analysis |
+| Apoorva Sinha | Feature Selection, Dimensionality Reduction, Results Evaluation and Analysis |
+| Neelabh Sinha |  Decision Tree, Gradient Boost, Random Forest, SVM, Results Evaluation and Analysis |
+| Snigdha Verma | Tournament Prediction Pipeline, Results Evaluation and Analysis |
+| Yu- Chen Lin |  Test data annotation, Results Evaluation and Analysis |
 
-## 8.2 Project Gantt Chart
+## 7.2 Project Gantt Chart
 
 The gantt chart covering complete timeline and responsibility distribution can be found [here](https://docs.google.com/spreadsheets/d/101ID8me3ChWkl0MzavG_UmaGsH9tkSGHOLhPi9ybc2Y/edit?usp=sharing){:target="_blank"}.
 
-# 9 References 
+# 8 References 
 1. D. Delen, D. Cogdell, and N. Kasap. A comparative analysis of data mining methods in predicting ncaa bowl outcomes.International Journal of Forecasting, 28(2):543–552, 2012 .
 2. T. Horvat and J. Job. The use of machine learning in sport outcome prediction: A review.WIREs Data Mining and Knowledge Discovery, 10(5):e1380, 2020.
 3. T. Horvat, J. Job, R. Logozar, and . Livada. A data-driven machine learning algorithm for predicting the outcomes of nba games.Symmetry, 15(4), 2023.
