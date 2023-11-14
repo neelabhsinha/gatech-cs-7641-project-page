@@ -89,30 +89,45 @@ We analyze the performance of the various classification schemes on our dataset 
 | SVM                | 0.73     | 0.73      | 0.73   | 0.73      | 0.20    |
 
 ### 5.1.1 Confusion Matrix
-| | |
-| - | - |
-| ![LogisticRegressionCM](./assets/images/confusion_matrix_lr.png) | ![DTCM](./assets/images/confusion_matrix_dt.png) |
-| ![RFCM](./assets/images/confusion_matrix_rf.png) | ![GBCM](./assets/images/confusion_matrix_gb.png) |
-| ![SVMCM](./assets/images/confusion_matrix_svm.png) | |
-| | |
+<p>
+  <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionCM" width="350"/>
+  <img src="./assets/images/confusion_matrix_dt.png" alt="DTCM" width="350"/>
+  <img src="./assets/images/confusion_matrix_rf.png" alt="RFCM" width="350"/>
+ </p>
+ <p>
+  <img src="./assets/images/confusion_matrix_gb.png" alt="GBCM" width="350"/>
+  <img src="./assets/images/confusion_matrix_svm.png" alt="SVMCM" width="350"/>
+ </p>
+
 
 ### 5.1.2 Learning Curve
-| | |
-| - | - |
-| ![LogisticRegressionCurve](./assets/images/learning_curve_logistic_regression.png) | ![DTCurve](./assets/images/learning_curve_dt.png) |
-| ![RFCurve](./assets/images/learning_curve_rf.png) | ![GBCurve](./assets/images/learning_curve_gb.png) |
-| ![SVMCurve](./assets/images/learning_curve_svm.png) | |
-|  | |
+
+<p>
+  <img src="./assets/images/learning_curve_logistic_regression.png" alt="LogisticRegressionCurve" width="350"/>
+  <img src="./assets/images/learning_curve_dt.png" alt="DTCurve" width="350"/>
+  <img src="./assets/images/learning_curve_rf.png" alt="RFCurve" width="350"/>
+ </p>
+ <p>
+  <img src="./assets/images/learning_curve_gb.png" alt="GBCurve" width="350"/>
+  <img src="./assets/images/learning_curve_svm.png" alt="SVMCurve" width="350"/>
+ </p>
+
 
 ### 5.1.3 ROC/AUC Curve
-| | |
-| - | - |
-| ![LogisticRegressionROC](./assets/images/roc_curve_lr.png) | ![DTROC](./assets/images/roc_curve_dt.png) |
-| ![RFROC](./assets/images/roc_curve_rf.png) | ![GBROC](./assets/images/roc_curve_gb.png) |
-| ![GBROC](./assets/images/roc_curve_svm.png) | |
-| | |
+
+<p>
+  <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionROC" width="350"/>
+  <img src="./assets/images/roc_curve_dt.png" alt="DTROC" width="350"/>
+  <img src="./assets/images/roc_curve_rf.png" alt="RFROC" width="350"/>
+ </p>
+ <p>
+  <img src="./assets/images/roc_curve_gb.png" alt="GBROC" width="350"/>
+  <img src="./assets/images/roc_curve_svm.png" alt="SVMROC" width="350"/>
+ </p>
 
 ## 5.2 Impact of Forward Feature Selection
+
+Forward feature selection is the iterative addition of features to the model one at a time. The process starts with an empty set of features and gradually incorporates the most relevant features based on certain criteria, in our case the increase in accuracy of the model based on the set of features being added. Post forward feature selection, we found the accuracy of each model to be drop by 5%. Due to this, we did not move forward with employing this technique. A possible hypothesis and explanation for this behavior, is that individual features had lesser contribution to the accuracy of the model, and were enforced by other features of the dataset, thus leading to better accuracy without forward feature selection.
 
 ## 5.3 Impact of Principal Component Analysis
 
@@ -124,11 +139,61 @@ We analyze the performance of the various classification schemes on our dataset 
 
 
 ## 5.5 Tournament Simulation
-**Flowchart showing the structure of tournament code?**
 
-**Bracket Predictions?**
+### 5.5.1 Tournament Schedule
 
-**One full tournament run**
+We are following the official FIFA World Cup match scheduling strategy. For this simulation, we have used the official FIFA World Cup 2022 Groups.
+The groups are as follows:
+### 
+    Group A= ['Qatar', 'Ecuador', 'Senegal', 'Netherlands']
+    Group B= ['England', 'Iran', 'USA', 'Wales']
+    Group C= ['Argentina', 'Saudi Arabia', 'Mexico', 'Poland']
+    Group D= ['France', 'Australia', 'Denmark', 'Tunisia']
+    Group E= ['Spain', 'Costa Rica', 'Germany', 'Japan']
+    Group F= ['Belgium', 'Canada', 'Morocco', 'Croatia']
+    Group G= ['Brazil', 'Serbia', 'Switzerland', 'Cameroon']
+    Group H= ['Portugal', 'Ghana', 'Uruguay', 'South Korea']
+##### Total matches= 64
+#### A.  Group Stage- 8 groups of 4 teams each<br>
+     Each team plays 3 matches with the other teams in the group
+     Total matches per group= 6 (4C2)
+     Total matches= 48
+#### B. Knockout Stages- Played after Group Stages
+##### 1. Round of 16- 8 Matches (16C2 Matches)<br>
+     First-place Group A vs. Second-place Group B- W1
+     First-place Group B vs. Second-place Group A- W2
+     First-place Group C vs. Second-place Group D- W3
+     First-place Group D vs. Second-place Group C- W4
+     First-place Group E vs. Second-place Group F- W5
+     First-place Group F vs. Second-place Group E- W6
+     First-place Group G vs. Second-place Group H- W7
+     First-place Group H vs. Second-place Group G- W8
+ 
+##### 2. Quarter Finals- 4 Matches (8C2)<br>
+     W1 vs W2- QF_W1
+     W3 vs W4- QF_W2
+     W5 vs W6- QF_W3
+     W7 vs W8- QF_W4
+ 
+##### 3. Semi Finals- 2 Matches (4C2)<br>
+     QF_W1 vs QF_W2- SF_W1
+     QF_W3 vs QF_W4- SF_W2
+ 
+##### 4. Play-offs/ Third Place- 1 Match (2C2)<br> 
+     Semi Final Losers
+ 
+##### 5. Final- 1 Match<br>
+     SF_W1 vs SF_W2
+
+
+### Simulation
+We have analysed the results using 5 different models:
+
+![Decision Tree Simulation](./assets/images/simulation_decision_tree.png)
+![Gradient Boost Simulation](./assets/images/simulation_gradient_boost.png)
+![Logistic Regression Simulation](./assets/images/simulation_logistic_regression.png)
+![Random Forest Simulation](./assets/images/simulation_random_forest.png)
+![Support Vector Machine Simulation](./assets/images/simulation_support_vector_machine.png)
 
 <!-- ----To see further (Neelabh's checkpoint) ------ -->
 
