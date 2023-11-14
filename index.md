@@ -55,6 +55,17 @@ To predict the outcomes, we first extract features for a match fixture using dom
 ![New Features](./assets/images/basefeatures.png)
 
 #### 4.1.3 Exploratory Data Analysis
+<p>
+  <img src="./assets/images/eda/Correlation Heatmap.png" alt="Correlation Heatmap" width="350"/>
+  <img src="./assets/images/eda/Distribution of Match Results.png" alt="Distribution of Match Results" width="350" height="277"/>
+ </p>
+ <p>
+   <img src="./assets/images/eda/Goals Conceded - Home vs. Away.png" alt="Goals Conceded - Home vs. Away" width="350"/>
+  <img src="./assets/images/eda/h2h Mean Goals - Home vs Away.png" alt="h2h Mean Goals - Home vs Away" width="350"/>
+ </p>
+ <p>
+  <img src="./assets/images/eda/Mean Goals Scored - Home vs. Away.png" alt="Mean Goals Scored - Home vs. Away" width="350"/>
+ </p>
 
 ## 4.2 Models
 
@@ -259,18 +270,18 @@ In our upcoming project phase, we aim to leverage unsupervised machine learning 
 The gantt chart covering complete timeline and responsibility distribution can be found [here](https://docs.google.com/spreadsheets/d/101ID8me3ChWkl0MzavG_UmaGsH9tkSGHOLhPi9ybc2Y/edit?usp=sharing).
 
 # 8 References 
-1. D. Delen, D. Cogdell, and N. Kasap. A comparative analysis of data mining methods in predicting ncaa bowl outcomes.International Journal of Forecasting, 28(2):543–552, 2012 .
-2. T. Horvat and J. Job. The use of machine learning in sport outcome prediction: A review.WIREs Data Mining and Knowledge Discovery, 10(5):e1380, 2020.
-3. T. Horvat, J. Job, R. Logozar, and . Livada. A data-driven machine learning algorithm for predicting the outcomes of nba games.Symmetry, 15(4), 2023.
-4. D. Prasetio and D. Harlili. Predicting football match results with logistic regression.2016 International Conference On Advanced Informatics: Concepts, Theory And Application (ICAICTA), pages 1–5, 2016.
-5. https://www.statista.com/chart/28766/global-reach-and-tv-viewership-of-the-fifa-world-cup
-6. E. Tiwari, P. Sardar and S. Jain, "Football Match Result Prediction Using Neural Networks and Deep Learning," 2020 8th       International Conference on Reliability, Infocom Technologies and Optimization (Trends and Future Directions) (ICRITO), Noida, India, 2020, pp. 229-231, doi: 10.1109/ICRITO48877.2020.9197811.
-7. Dixon, M.J. and Coles, S.G. (1997), Modelling Association Football Scores and Inefficiencies in the Football Betting Market. Journal of the Royal Statistical Society: Series C (Applied Statistics), 46: 265-280. https://doi.org/10.1111/1467-9876.00065
-8. Cox, D. R. (1958). The regression analysis of binary sequences (with discussion). Journal of the Royal Statistical Society: Series B (Methodological), 20(2), 215-242.
-9. Boser, B. E., Guyon, I. M., & Vapnik, V. N. (1992, July). A training algorithm for optimal margin classifiers. In Proceedings of the fifth annual workshop on Computational learning theory (pp. 144-152).
-10. Quinlan, J. R. (1986). Induction of decision trees. Machine Learning, 1(1), 81-106.
-11. Breiman, L. (2001). Random forests. Machine Learning, 45(1), 5-32.
-12. Friedman, J. H. (2001). Greedy function approximation: A gradient boosting machine. Annals of Statistics, 29(5), 1189-1232.
-13. "Feature selection for high-dimensional genomic microarray data" George H. John and Pat Langley Computer Methods and Programs in Biomedicine, 1997, 56(1), 37-48. DOI: 10.1016/S0169-2607(98)00047-7
-14. "On Lines and Planes of Closest Fit to Systems of Points in Space" Karl Pearson Philosophical Magazine Series 6, 1901, 2(11), 559-572. DOI: 10.1080/14786440109462720
-15. “Unsupervised word sense disambiguation rivaling supervised methods” David Yarowsky, Proceedings of the 33rd annual meeting on Association for Computational Linguistics (ACL ‘95). Association for Computational Linguistics, Stroudsburg, PA, USA, 189-196.
+1. D. Delen, D. Cogdell, and N. Kasap, "A comparative analysis of data mining methods in predicting NCAA bowl outcomes," International Journal of Forecasting, vol. 28, no. 2, pp. 543–552, 2012.
+2. T. Horvat and J. Job, "The use of machine learning in sport outcome prediction: A review," WIREs Data Mining and Knowledge Discovery, vol. 10, no. 5, p. e1380, 2020.
+3. T. Horvat, J. Job, R. Logozar, and I. Livada, "A data-driven machine learning algorithm for predicting the outcomes of NBA games," Symmetry, vol. 15, no. 4, 2023.
+4. D. Prasetio and D. Harlili, "Predicting football match results with logistic regression," in 2016 International Conference On Advanced Informatics: Concepts, Theory And Application (ICAICTA), 2016, pp. 1–5.
+5. [Online]. Available: https://www.statista.com/chart/28766/global-reach-and-tv-viewership-of-the-fifa-world-cup
+6. E. Tiwari, P. Sardar, and S. Jain, "Football Match Result Prediction Using Neural Networks and Deep Learning," in 2020 8th International Conference on Reliability, Infocom Technologies and Optimization (Trends and Future Directions) (ICRITO), Noida, India, 2020, pp. 229-231.
+7. M. J. Dixon and S. G. Coles, "Modelling Association Football Scores and Inefficiencies in the Football Betting Market," Journal of the Royal Statistical Society: Series C (Applied Statistics), vol. 46, pp. 265-280, 1997. DOI: 10.1111/1467-9876.00065
+8. D. R. Cox, "The regression analysis of binary sequences (with discussion)," Journal of the Royal Statistical Society: Series B (Methodological), vol. 20, no. 2, pp. 215-242, 1958.
+9. B. E. Boser, I. M. Guyon, and V. N. Vapnik, "A training algorithm for optimal margin classifiers," in Proceedings of the fifth annual workshop on Computational learning theory, 1992, pp. 144-152.
+10. J. R. Quinlan, "Induction of decision trees," Machine Learning, vol. 1, no. 1, pp. 81-106, 1986.
+11. L. Breiman, "Random forests," Machine Learning, vol. 45, no. 1, pp. 5-32, 2001.
+12. J. H. Friedman, "Greedy function approximation: A gradient boosting machine," Annals of Statistics, vol. 29, no. 5, pp. 1189-1232, 2001.
+13. G. H. John and P. Langley, "Feature selection for high-dimensional genomic microarray data," Computer Methods and Programs in Biomedicine, vol. 56, no. 1, pp. 37-48, 1997. DOI: 10.1016/S0169-2607(98)00047-7
+14. K. Pearson, "On Lines and Planes of Closest Fit to Systems of Points in Space," Philosophical Magazine Series 6, vol. 2, no. 11, pp. 559-572, 1901. DOI: 10.1080/14786440109462720
+15. D. Yarowsky, "Unsupervised word sense disambiguation rivaling supervised methods," in Proceedings of the 33rd annual meeting on Association for Computational Linguistics (ACL ‘95), Association for Computational Linguistics, Stroudsburg, PA, USA, 1995, pp. 189-196.
