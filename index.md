@@ -39,9 +39,9 @@ For the midsem checkpoint we will be covering **Outcome Prediction** in the repo
 
 ## 4.1 Dataset
 We use the datasets listed below:
-- [Soccer World Cup Data (Kaggle)](https://www.kaggle.com/datasets/shilongzhuang/soccer-world-cup-challenge/){:target="_blank"} 
-- [All International Matches (Kaggle)](https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017?select=results.csv){:target="_blank"} 
-- [FIFA World Rankings (Kaggle)](https://www.kaggle.com/datasets/cashncarry/fifaworldranking){:target="_blank"} 
+- [Soccer World Cup Data (Kaggle)](https://www.kaggle.com/datasets/shilongzhuang/soccer-world-cup-challenge/)
+- [All International Matches (Kaggle)](https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017?select=results.csv)
+- [FIFA World Rankings (Kaggle)](https://www.kaggle.com/datasets/cashncarry/fifaworldranking)
 
 The dataset features are described in the following figure -
 ![Dataset Summary](./assets/images/dataset.png)
@@ -64,16 +64,15 @@ Using features extracted above, we train build a binary classifier using various
 
 As we realize that the number of data can also be a cause of concern since World Cups happen once every four years in a space of two months, we generate artificial permutation of matches of two teams. To do this, we take a date $D$ and team playing a match on that day $T_D$. Then, for each team $T_D^i$ in this set, if the team has played against a set $T_R$ teams in the past, we generate a match between $T_D^i$ and each member of set $T_R - T_D$. After this, we select a random $N_A$ set of matches from this and follow a semi-supervised learning [X] approach to train the classifier using labeled real matches and this unlabeled artificial matches to predict the results.
 
+### 4.2.1 Model Training
+
+We started with splitting our dataset into 80% Training Data and 20% Test Data.
+
+In all the learning algorithms employed we have a fixed set of hyperparameters (example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc). To tune these parameters we employed 2 types of searches, RandomizedSearch and GridSearch. Since this is a multivariate optimization problem, randomly sampling the parameters helps us narrow down the search space. We began with a RandomizedSearchCV in order to get to the vicinity of hyperparameters. Then, we conducted GridSearch in the proximity of the best performing solution of RandomizedSearch to fine tune a better performing set of hyperparameters. However, this did not yield significantly different results from the RandomizedSearch. Owing to the computational cost of GridSearch, we chose to run only RandomizedSearch. 
+
+In RandomizedSearch, we first defined the search space, and then used K-Fold Cross Validation with K = 5.
 
 
-### 4.2.1 Hyperparameters
-
-In all the learning algorithms employed we have a fixed set of hyperparameters (example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc). In order to find these we use **RandomizedSearchCV** followed by **GridSearchCV**. Since this is a multivariate optimization problem, randomly sampling the parameters helps us narrow down the search space. We begin with a RandomizedSearchCV in order to get to the vicinity of hyperparameters. Then, we conduct **GridSearch** in the proximity of the best performing solution of **RandomizedSearchCV** to fine tune a better performing set of hyperparameters. This helps to reduce the computational cost and complexity of a full grid search, while increasing the accuracy around a **RandomizedSearchCV**.
-
-
-### 4.2.2 Model Training
-
-TODO: TBA
 # 5 Experiments
 
 ## 5.1 Supervised Model Performance
@@ -144,10 +143,10 @@ Forward feature selection is the iterative addition of features to the model one
 
 ## 5.4 Impact of Semi-supervised Learning
 #### 5.4.1 Motivation 
+Given the infrequency of the World Cup occurring every four years, the limited availability of data points posed a challenge for traditional supervised learning approaches. To overcome this constraint, we were motivated to explore semi-supervised learning for our prediction model. This adaptive methodology allows us to make the most out of the available labeled data while efficiently incorporating the valuable information from unlabeled data, thereby enhancing the robustness and effectiveness of our predictive model.
 
-#### 5.4.2 Artificial Data Generation
-#### 5.4.3 Semi-supervised vs Supervised Learning
-##### 5.4.3.1 Model Performance
+#### 5.4.2 Semi-supervised vs Supervised Learning
+##### 5.4.2.1 Model Performance
 We analyze the performance of the various classification schemes on our dataset as shown below:
 
 | Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
@@ -161,19 +160,17 @@ We analyze the performance of the various classification schemes on our dataset 
 | RandomForest Semi Supervised      | 0.72     | 0.72      | 0.72   | 0.72      | 0.77    |
 
 
-##### 5.4.3.2 Confusion Matrix
+##### 5.4.2.2 Confusion Matrix
 <p>
   <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionSupervised" width="350"/>
   <img src="./assets/images/semi_supervised/confusion_matrix_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
  </p>
 
-##### 5.4.3.3 ROC/AUC Curve
+##### 5.4.2.3 ROC/AUC Curve
  <p>
   <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionSupervised" width="350"/>
   <img src="./assets/images/semi_supervised/roc_curve_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
  </p>
-
-
 
 
 ## 5.5 Tournament Simulation
@@ -227,17 +224,18 @@ The groups are as follows:
 ### Simulation
 We have analysed the results using 5 different models:
 
-![Decision Tree Simulation](./assets/images/simulation_decision_tree.png)
-![Gradient Boost Simulation](./assets/images/simulation_gradient_boost.png)
-![Logistic Regression Simulation](./assets/images/simulation_logistic_regression.png)
-![Random Forest Simulation](./assets/images/simulation_random_forest.png)
-![Support Vector Machine Simulation](./assets/images/simulation_support_vector_machine.png)
+<p>
+  <img src="./assets/images/simulation_decision_tree.png" alt="Decision Tree Simulation" width="900"/>
+  <img src="./assets/images/simulation_gradient_boost.png" alt="Gradient Boost Simulation" width="900"/>
+ <img src="./assets/images/simulation_logistic_regression.png" alt="Logistic Regression Simulation" width="900"/>
+  <img src="./assets/images/simulation_random_forest.png" alt="Random Forest Simulation" width="900"/>
+ <img src="./assets/images/simulation_support_vector_machine.png" alt="Support Vector Machine Simulation" width="900"/>
+ </p>
 
 <!-- ----To see further (Neelabh's checkpoint) ------ -->
 
-# 6 Post-MidTerm Work
-We will work on the unsupervised portion of the problem related to clustering and enhance our tournament simulations and see if the unsupervised clustering technqiues offer us some new insight that helps us calibrate our supervised classifiers better.
-**Put the clustering discussion here if you wanna copy proposal stuff**
+# 6 Post Mid-Term Work
+In our upcoming project phase, we aim to leverage unsupervised machine learning techniques, specifically K-means and Gaussian Mixture Models (GMM), to cluster all participating teams in the FIFA World Cup. This clustering approach will enable us to form eight distinct groups, providing a novel perspective for enhancing our tournament simulations. By incorporating unsupervised clustering insights into our pipeline, we anticipate gaining valuable information for refining the calibration of our supervised classifiers. This innovative methodology aims to contribute to a more accurate prediction model and ultimately enhance our ability to forecast the World Cup winner.
 # 7 Project Timeline and Responsibilities
 
 ## 7.1 Contributions for the Mid-Term
@@ -252,7 +250,7 @@ We will work on the unsupervised portion of the problem related to clustering an
 
 ## 7.2 Project Gantt Chart
 
-The gantt chart covering complete timeline and responsibility distribution can be found [here](https://docs.google.com/spreadsheets/d/101ID8me3ChWkl0MzavG_UmaGsH9tkSGHOLhPi9ybc2Y/edit?usp=sharing){:target="_blank"}.
+The gantt chart covering complete timeline and responsibility distribution can be found [here](https://docs.google.com/spreadsheets/d/101ID8me3ChWkl0MzavG_UmaGsH9tkSGHOLhPi9ybc2Y/edit?usp=sharing).
 
 # 8 References 
 1. D. Delen, D. Cogdell, and N. Kasap. A comparative analysis of data mining methods in predicting ncaa bowl outcomes.International Journal of Forecasting, 28(2):543–552, 2012 .
