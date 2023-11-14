@@ -23,7 +23,7 @@ The problem of predicting game outcomes especially in Football (also called Socc
 A tournament \\(\mathcal{T}(\boldsymbol{T},\boldsymbol{G},\boldsymbol{T_b})\\) is a set of teams \\(\boldsymbol{T}\\) participating in games \\(\boldsymbol{G}\\) (either a winner or tie (only in  group stage)) over stages \\(\boldsymbol{b} = 0,1,2,...\\) ,with a set of (\\(\boldsymbol{T_b}\\)) teams qualifying to play them. Our goal is:
 
 1. **Outcome prediction** : \\(\forall G(T_i,T_j) \in \boldsymbol{G}\\) we predict \\(\hat{G}(T_i,T_j)\\) accurately.
-2. **Group Prediction** : Given  \\(\boldsymbol{T}\\) teams, we predict 8 groups \\(\boldsymbol{g}\\) such that \\(\|g_i\| = 4\\) and each \\(T_i -> g_i\\). 
+2. **Group Prediction** : Given  \\(\boldsymbol{T}\\) teams, we predict 8 groups \\(\boldsymbol{g}\\) such that \\(\|g_i\| = 4\\) and each \\(T_i \Rightarrow g_i\\). 
 
 The notion of "accuracy" in our case is also quantified by additional metrics like **cross-entropy** , **precision** , **recall** and **F1-score** (discussed below in the metrics section.)
 
@@ -115,7 +115,7 @@ We believe that the ensemble learning methods are not performing as well because
  </p>
  <p>
    <img src="./assets/images/learning_curve_svm.png" alt="SVMCurve" width="350"/>
- </p
+ </p>
 
 
 ### 5.1.3 ROC/AUC Curve
@@ -231,11 +231,11 @@ The groups are as follows:
 We have analysed the results using 5 different models:
 
 <p>
-  <img src="./assets/images/simulation_decision_tree.png" alt="Decision Tree Simulation" width="900"/>
-  <img src="./assets/images/simulation_gradient_boost.png" alt="Gradient Boost Simulation" width="900"/>
- <img src="./assets/images/simulation_logistic_regression.png" alt="Logistic Regression Simulation" width="900"/>
-  <img src="./assets/images/simulation_random_forest.png" alt="Random Forest Simulation" width="900"/>
- <img src="./assets/images/simulation_support_vector_machine.png" alt="Support Vector Machine Simulation" width="900"/>
+  <img src="./assets/images/simulation_decision_tree.png" alt="Decision Tree Simulation" width="1200"/>
+  <img src="./assets/images/simulation_gradient_boost.png" alt="Gradient Boost Simulation" width="1200"/>
+ <img src="./assets/images/simulation_logistic_regression.png" alt="Logistic Regression Simulation" width="1200"/>
+  <img src="./assets/images/simulation_random_forest.png" alt="Random Forest Simulation" width="1200"/>
+ <img src="./assets/images/simulation_support_vector_machine.png" alt="Support Vector Machine Simulation" width="1200"/>
  </p>
 
 <!-- ----To see further (Neelabh's checkpoint) ------ -->
