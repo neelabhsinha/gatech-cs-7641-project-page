@@ -90,11 +90,25 @@ As we can see, these features are separable linearly at the tail ends on each si
 
 ## 4.2 Models
 
+### 4.2.1 Supervised Learning Models
+
 Using features extracted above, we train a binary classifier using various algorithms. To start, we implement Logistic Regression [8], Support Vector Machines [9], Decision Tree [10] ,Naive Bayes and kNN  which are simple, efficient and interpretable algorithms and then move to ensemble classifiers like Random Forest [11], and Gradient Boost [12] for Decision Trees and Adaptive Boosting for Logistic Regression and Decision Trees to predict the probability of team labeled as home winning the match. We also create an "Ensemble Classifier" which combines the tuned models from the base class and makes inference by majority voting and returns the predicted probability for class labels as the average of all constituent models' and compare its performance with the others. In working with the classifier, we also experiment with forward feature selection [13] to select best features from the initial feature set, and also do Principal Component Analysis [14] to reduce the dimensionality of features. We tune all these methods by defining a search space and using Randomized Search followed by Grid Search using k-fold cross validation.
 
 As we realize that the number of data can also be a cause of concern since World Cups happen once every four years in a space of two months, we generate artificial permutation of matches of two teams. To do this, we take a date \\(D\\) and team playing a match on that day \\(T_D\\). Then, for each team \\(T_D^i\\) in this set, if the team has played against a set \\(T_R\\) teams in the past, we generate a match between \\(T_D^i\\) and each member of set \\(T_R - T_D\\). After this, we select a random \\(N_A\\) set of matches from this and follow a semi-supervised learning [15] approach to train the classifier using labeled real matches and this unlabeled artificial matches to predict the results. We pass these unlabeled data points with the labels to iteratively predict the outcome of unlabeled points and add them to the training set if the confidence threshold of prediction is more than 0.75.
 
-### Model Training
+In our approach to forming the FIFA groups, we employed unsupervised machine learning models, namely KMeans and Gaussian Mixture Model (GMM). The objective was to autonomously cluster the participating teams into eight distinct groups for the initial stage of the FIFA tournament.
+
+### 4.2.2 Unsupervised Learning Models
+
+We employed unsupervised machine learning techniques, specifically KMeans and Gaussian Mixture Model (GMM), to organize the 32 participating FIFA teams into eight distinct groups for the group stage of the tournament.
+
+For KMeans clustering, we created four clusters, each comprising eight teams. To form the groups, we assigned one team from each cluster based on the indices of the teams. For instance, the 0th index members from all clusters constituted the first group, the 1st index members formed the second group, and so forth. To ensure precisely eight groups in each KMeans cluster, we utilized Constrained KMeans.
+
+In the case of GMM, we maintained eight teams within each cluster by selecting teams with the highest probability. Suppose there were 10 teams with the maximum probability for cluster 1; we assigned cluster 1 only to the top eight teams among these, ensuring the desired number of groups.
+
+These unsupervised methods allowed us to structure the initial stage of the tournament, contributing to a fair and balanced competition among the participating teams.
+
+### 4.2.3 Model Training
 
 To select the features, we heuristically optimized \\(n_{ind}\\)=15 and \\(n_{h2h}\\)=15 by changing the values, training the models and analyzing the accuracy. We sweeped these values from 5 to 20 in steps of 5 and took the best combination.
 
