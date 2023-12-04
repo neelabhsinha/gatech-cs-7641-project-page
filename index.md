@@ -279,13 +279,13 @@ As we can see, there is no significant improvement in semi supervised learning o
 We tried taking all the classifiers that we trained and create an ensemble using it. This did not require any training as we loaded all the trained models. Precisely, we took Support Vector Machines, Decision Trees, Logistic Regression, KNN and Gaussian Naive Bayes classifiers as they are widely different in nature and should cover a large scenarios. 
 
 For prediction, we employed the technique of majority voting where the final prediction was the class which was predicted as majority by the individual features, and the probability was the average across all models. The results are obtained given below.
-|Metric|Value|
-|------|-----|
-Accuracy | 73.94% |
-Precision | 74.02% |
-Recall | 73.94% |
-F-1 score | 73.94% |
-ROC-AUC | 0.81 |
+| Metric | Value |
+| ------ | ----- |
+| Accuracy | 73.94% |
+| Precision | 74.02% |
+| Recall | 73.94% |
+| F-1 score | 73.94% |
+| ROC-AUC | 0.81 |
 
  <p>
   <img src="./assets/images/confusion_matrix_ensemble.png" alt="EnsembleCM" width="350"/>
