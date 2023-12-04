@@ -128,10 +128,9 @@ We analyze the performance of the various classification schemes on our dataset 
 | Decision Tree      | 70.29%   | 70.46%    | 70.29% | 70.26%    | 0.77    |
 | kNN                | 71.41%   | 71.51%    | 71.41% | 71.40%    | 0.80    |
 | Adaptive Boost (base model - logistic regression) | 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
-<!-- | Adaptive Boost (base model - decision tree) | 71.36%   | 71.50%    | 71.36% | 71.34%    | 0.81    | -->
 | Random Forest                | 71.69%   | 71.81%    | 71.69% | 71.68%    | 0.80    |
 | Gradient Boosting            | 71.52%   | 72.06%    | 71.52% | 71.41%    | 0.80    |
-| Naive Bayes        | 72.54%   | 72.54%    | 72.54% | 72.53%    | 0.80    |
+| Gaussian Naive Bayes        | 72.54%   | 72.54%    | 72.54% | 72.53%    | 0.80    |
 | Ensemble Classifier          | 73.94%   | 74.02%    | 73.94% | 73.94%    | 0.81    |
 
 From the above table, we can see that **logistic regression** and **support vector machines** outperform other models. On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made by random search.
