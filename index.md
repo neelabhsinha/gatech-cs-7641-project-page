@@ -90,17 +90,21 @@ As we can see, these features are separable linearly at the tail ends on each si
 
 ## 4.2 Models
 
-Using features extracted above, we train a binary classifier using various algorithms. To start, we implement Logistic Regression [8], Support Vector Machines [9], Decision Tree [10] which are simple, efficient and interpretable algorithms and them move to ensemble methods like Random Forest [11], and Gradient Boost [12] to predict the probability of team labeled as home winning the match. In working with the classifier, we also experiment with forward feature selection [13] to select best features from the initial feature set, and also do Principal Component Analysis [14] to reduce the dimensionality of features. We tune all these methods by defining a search space and using Randomized Search  using k-fold cross validation.
+Using features extracted above, we train a binary classifier using various algorithms. To start, we implement Logistic Regression [8], Support Vector Machines [9], Decision Tree [10] ,Naive Bayes and kNN  which are simple, efficient and interpretable algorithms and then move to ensemble classifiers like Random Forest [11], and Gradient Boost [12] for Decision Trees and Adaptive Boosting for Logistic Regression and Decision Trees to predict the probability of team labeled as home winning the match. We also create an "Ensemble Classifier" which combines the tuned models from the base class and makes inference by majority voting and returns the predicted probability for class labels as the average of all constituent models' and compare its performance with the others. In working with the classifier, we also experiment with forward feature selection [13] to select best features from the initial feature set, and also do Principal Component Analysis [14] to reduce the dimensionality of features. We tune all these methods by defining a search space and using Randomized Search followed by Grid Search using k-fold cross validation.
 
 As we realize that the number of data can also be a cause of concern since World Cups happen once every four years in a space of two months, we generate artificial permutation of matches of two teams. To do this, we take a date \\(D\\) and team playing a match on that day \\(T_D\\). Then, for each team \\(T_D^i\\) in this set, if the team has played against a set \\(T_R\\) teams in the past, we generate a match between \\(T_D^i\\) and each member of set \\(T_R - T_D\\). After this, we select a random \\(N_A\\) set of matches from this and follow a semi-supervised learning [15] approach to train the classifier using labeled real matches and this unlabeled artificial matches to predict the results. We pass these unlabeled data points with the labels to iteratively predict the outcome of unlabeled points and add them to the training set if the confidence threshold of prediction is more than 0.75.
 
 ### 4.2.1 Model Training
 
-To select the features, we heurestically optimized \\(n_{ind}\\)=15 and \\(n_{h2h}\\)=15 by changing the values, training the models and analyzing the accuracy. We sweeped the values from 5 to 20 in steps of 5 and took the best combination.
+To select the features, we heuristically optimized \\(n_{ind}\\)=15 and \\(n_{h2h}\\)=15 by changing the values, training the models and analyzing the accuracy. We sweeped these values from 5 to 20 in steps of 5 and took the best combination.
 
 To train the model, we started with splitting our dataset into 80% Training Data and 20% Test Data.
 
 In all the learning algorithms employed we have a fixed set of hyperparameters (example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc). To tune these parameters we defined a search space and employed 2 types of searches, Randomized Search and Grid Search. Since this is a multivariate optimization problem, randomly sampling the parameters helps us narrow down the search space. We began with a Randomized Search in order to get to the vicinity of hyperparameters. Then, we conducted Grid Search in the proximity of the best performing solution of Randomized Search to fine tune a better performing set of hyperparameters. However, Grid Search did not yield significantly different results from the Randomized Search. Owing to the computational cost of Grid Search, we chose to run only Randomized Search. We did both of these using K-Fold Cross Validation with K = 5.
+### 4.2.2 Chosen Model Hyperparameters
+The following table lists the hyperparameters chosen for the models as determined by k-fold CV:
+
+-- TABLE GOES HERE--
 
 ## 4.3 Unsupervised Learning
 ### Motivation 
@@ -112,68 +116,132 @@ Under our clustering schemes we first divide all the teams in 4 clusters of 8 te
 
 1.**Constrained K-means** : This is a variation of the K-means clustering algorithm where we can control the cluster size[17]. Here we set the minimum and maximum of each cluster size to 8 simultaneousy for our task.The cluster to group assignment is done by sorting teams in ascending/descending order in terms of distance from the center of their repsective clusters and taking the top team from each cluster iteratively without replacement till we have 8 groups.
 
-2.**GMM** : We compare and contrast the above scheme which is a hard clustering scheme with Gaussian Mixture Models which is a soft clustering scheme . Various initialization schemes are tried and the one that yields the best clustering metrics is chosen.In this case for each gaussian center we order the points by the cluster responsibilty at each cluster and the top element from each cluster is selected and put in the same group till we exhaust all teams.
+2.**GMM** : We compare and contrast the above scheme which is a hard clustering scheme with Gaussian Mixture Models which is a soft clustering scheme . Various initialization schemes are tried and the one that yields the best clustering metrics is chosen.In this case for each gaussian center we order the points by the cluster responsibilty at each cluster and the top elements from each cluster is selected and put in the same group one by one till we exhaust all teams.
 # 5 Experiments
 
 ## 5.1 Supervised Model Performance
+
+### 5.1.1 Base Models
 
 We analyze the performance of the various classification schemes on our dataset using all standard metrics of evaluating a supervised learning algorithm. We primarily want to optimize the accuracy of the prediction, but since we have a balanced dataset and no bias towards avoiding either true negatives or false positives, we treat them fairly. Our final results are as shown below:
 
 | Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
 | ------------------ | -------- | --------- | ------ | --------- | ------- |
-| Logistic Regression| 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
-| SVM                | 73.16%   | 73.23%    | 73.16% | 73.15%    | 0.81    |
-| Decision Tree      | 70.29%   | 70.49%    | 70.29% | 70.25%    | 0.76    |
-| Random Forest      | 71.86%   | 72.00%    | 71.86% | 71.84%    | 0.79    |
-| Gradient Boosting  | 71.41%   | 71.94%    | 71.41% | 71.29%    | 0.79    |
+| Logistic Regression| 73.49%   | 73.59%    | 73.49% | 73.49%    | 0.81    |
+| SVM                | 73.38%   | 73.51%    | 73.38% | 73.37%    | 0.81    |
+| Decision Tree      | 70.29%   | 70.46%    | 70.29% | 70.26%    | 0.77    |
+| kNN                | 71.41%   | 71.51%    | 71.41% | 71.40%    | 0.80    |
+| Naive Bayes        | 72.54%   | 72.54%    | 72.54% | 72.53%    | 0.80    |
 
-From the above table, we can see that logistic regression and support vector machines outperform other models. On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made my random search.
 
-We believe that the ensemble learning methods are not performing as well because the data is not enriched and complex enough to train them. This is also probably why we observed that for higher range of search space, the model over-fits and for relaxing the range to reduce over-fitting, the results are not as expected. The confusion matrices, learning curves and ROC curves of each of these methods are given below.
 
-### 5.1.1 Confusion Matrix
+### 5.1.2 Ensemble Models
+
+| Technique                    | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
+| ---------------------------- | -------- | --------- | ------ | --------- | ------- |
+| Logistic Regression(Adaboost)| 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
+| Decision Tree(Adaboost)      | 71.36%   | 71.50%    | 71.36% | 71.34%    | 0.81    |
+| Random Forest                | 71.69%   | 71.81%    | 71.69% | 71.68%    | 0.80    |
+| Gradient Boosting            | 71.52%   | 72.06%    | 71.52% | 71.41%    | 0.80    |
+| Ensemble Classifier          | 73.94%   | 74.02%    | 73.94% | 73.94%    | 0.81    |
+
+From the above table, we can see that **logistic regression** and **support vector machines** outperform other models except "**Ensemble Classifier**" . On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made by random search.
+
+Our "**Ensemble Classifier**" slightly outperforms all the other  models(by approximately \\(0.5 \% \\)).We believe that the other ensemble learning methods are not performing as well because the data is not enriched and complex enough to train them. This is also probably why we observed that for higher range of search space, the model over-fits and for relaxing the range to reduce over-fitting, the results are not as expected. The confusion matrices, learning curves and ROC curves of each of these methods are given below.
+### 5.1.3 Confusion Matrix
+
+#### Base Models
+
 <p>
   <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionCM" width="350"/>
   <img src="./assets/images/confusion_matrix_dt.png" alt="DTCM" width="350"/>
  </p>
  <p>
-   <img src="./assets/images/confusion_matrix_rf.png" alt="RFCM" width="350"/>
-  <img src="./assets/images/confusion_matrix_gb.png" alt="GBCM" width="350"/>
+   <img src="./assets/images/confusion_matrix_knn.png" alt="KNNCM" width="350"/>
+  <img src="./assets/images/confusion_matrix_nb.png" alt="NBCM" width="350"/>
  </p>
  <p>
   <img src="./assets/images/confusion_matrix_svm.png" alt="SVMCM" width="350"/>
  </p>
 
+#### Ensemble Models 
+<p>
+  <img src="./assets/images/confusion_matrix_rf.png" alt="RFCM" width="350"/>
+  <img src="./assets/images/confusion_matrix_gb.png" alt="GBCM" width="350"/>
+ </p>
+ <p>
+   <img src="./assets/images/confusion_matrix_lr_ada.png" alt="ADALRCM" width="350"/>
+  <img src="./assets/images/confusion_matrix_dt_ada.png" alt="ADADTCM" width="350"/>
+ </p>
+ <p>
+  <img src="./assets/images/confusion_matrix_ensemble.png" alt="EnsembleCM" width="350"/>
+ </p>
 
-### 5.1.2 Learning Curve
+### 5.1.4 Learning Curve
+
+#### Base Models
 
 <p>
   <img src="./assets/images/learning_curve_logistic_regression.png" alt="LogisticRegressionCurve" width="350"/>
   <img src="./assets/images/learning_curve_dt.png" alt="DTCurve" width="350"/>
  </p>
  <p>
-   <img src="./assets/images/learning_curve_rf.png" alt="RFCurve" width="350"/>
-  <img src="./assets/images/learning_curve_gb.png" alt="GBCurve" width="350"/>
+   <img src="./assets/images/learning_curve_knn.png" alt="KNNCurve" width="350"/>
+  <img src="./assets/images/learning_curve_nb.png" alt="NBCurve" width="350"/>
  </p>
  <p>
    <img src="./assets/images/learning_curve_svm.png" alt="SVMCurve" width="350"/>
  </p>
 
 
-### 5.1.3 ROC/AUC Curve
+-- Comments on kNN's learning curve --
 
+#### Ensemble Models
+
+<p>
+  <img src="./assets/images/learning_curve_rf.png" alt="RFCurve" width="350"/>
+  <img src="./assets/images/learning_curve_gb.png" alt="GBCurve" width="350"/>
+ </p>
+ <p>
+   <img src="./assets/images/learning_curve_lrada.png" alt="ADALRCurve" width="350"/>
+  <img src="./assets/images/learning_curve_dtada.png" alt="ADADTCurve" width="350"/>
+ </p>
+
+
+
+### 5.1.5 ROC/AUC Curve
+
+#### Base Models
 <p>
   <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionROC" width="350"/>
   <img src="./assets/images/roc_curve_dt.png" alt="DTROC" width="350"/>
   
  </p>
  <p>
- <img src="./assets/images/roc_curve_rf.png" alt="RFROC" width="350"/>
-  <img src="./assets/images/roc_curve_gb.png" alt="GBROC" width="350"/>
+ <img src="./assets/images/roc_curve_knn.png" alt="KNNROC" width="350"/>
+  <img src="./assets/images/roc_curve_nb.png" alt="NBROC" width="350"/>
  </p>
   <p>
  <img src="./assets/images/roc_curve_svm.png" alt="SVMROC" width="350"/>
  </p>
+
+#### Ensemble Models
+
+<p>
+  <img src="./assets/images/roc_curve_rf.png" alt="RFROC" width="350"/>
+  <img src="./assets/images/roc_curve_gb.png" alt="GBROC" width="350"/>
+  
+ </p>
+ <p>
+ <img src="./assets/images/roc_curve_lrada.png" alt="LRADAROC" width="350"/>
+  <img src="./assets/images/roc_curve_dtada.png" alt="DTADAROC" width="350"/>
+ </p>
+  <p>
+ <img src="./assets/images/roc_curve_ensemble.png" alt="ENSROC" width="350"/>
+ </p>
+
+
+
 
 ## 5.2 Impact of Forward Feature Selection
 
