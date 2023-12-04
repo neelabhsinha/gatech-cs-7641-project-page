@@ -274,10 +274,29 @@ As we can see, there is no significant improvement in semi supervised learning o
   <img src="./assets/images/semi_supervised/roc_curve_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
  </p>
 
+## 5.5 Ensemble Classifier
 
-## 5.5 Tournament Simulation
+We tried taking all the classifiers that we trained and create an ensemble using it. This did not require any training as we loaded all the trained models. Precisely, we took Support Vector Machines, Decision Trees, Logistic Regression, KNN and Gaussian Naive Bayes classifiers as they are widely different in nature and should cover a large scenarios. 
 
-### 5.5.1 Tournament Schedule
+For prediction, we employed the technique of majority voting where the final prediction was the class which was predicted as majority by the individual features, and the probability was the average across all models. The results are obtained given below.
+|Metric|Value|
+|------|-----|
+Accuracy | 73.94% |
+Precision | 74.02% |
+Recall | 73.94% |
+F-1 score | 73.94% |
+ROC-AUC | 0.81 |
+
+ <p>
+  <img src="./assets/images/confusion_matrix_ensemble.png" alt="EnsembleCM" width="350"/>
+  <img src="./assets/images/roc_curve_ensemble.png" alt="EnsembleCM" width="350"/>
+ </p>
+
+ From the above, we can see that there was a slight improvement on the performance but not by a lot. This further shows that the correct and incorrect predictions across all models are largely the same and thus, the accuracies that we get are the maximum we can achieve using the available data and features.
+
+## 5.6 Tournament Simulation
+
+### 5.6.1 Tournament Schedule
 
 We are following the official FIFA World Cup match scheduling strategy. For this simulation, we have used the official FIFA World Cup 2022 Groups.
 The groups are as follows:
@@ -338,7 +357,7 @@ We have analysed the results using 5 different models:
 
 
 From here, we can see that likely performance of all models are similar, as also indicated by the close performance scores. One reason why in reality Brazil did not win was because it lost to Croatia over penalty shootout on the given day. But, overall, it was a stronger team and more likely to win also. Argentina, the eventual winners are in the finals here as well. And, statistically, Brazil were a stronger team based on the features that we are using. So, in conclusion, we would say that our tournament predictor works well within error bounds.
-## 5.6 Unsupervised Learning
+## 5.7 Unsupervised Learning
 ### Clustering Results (KMeans)
 -- 2D/3D scatter plot with cluster results (preferably PCAd) --
 
