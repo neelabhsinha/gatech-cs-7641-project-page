@@ -123,89 +123,62 @@ We analyze the performance of the various classification schemes on our dataset 
 
 | Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
 | ------------------ | -------- | --------- | ------ | --------- | ------- |
-| Logistic Regression| 73.49%   | 73.59%    | 73.49% | 73.49%    | 0.81    |
+| Logistic Regression | 73.49%   | 73.59%    | 73.49% | 73.49%    | 0.81    |
 | SVM                | 73.38%   | 73.51%    | 73.38% | 73.37%    | 0.81    |
 | Decision Tree      | 70.29%   | 70.46%    | 70.29% | 70.26%    | 0.77    |
 | kNN                | 71.41%   | 71.51%    | 71.41% | 71.40%    | 0.80    |
-| Naive Bayes        | 72.54%   | 72.54%    | 72.54% | 72.53%    | 0.80    |
-
-
-
-### 5.1.2 Ensemble Models
-
-| Technique                    | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
-| ---------------------------- | -------- | --------- | ------ | --------- | ------- |
-| Logistic Regression(Adaboost)| 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
-| Decision Tree(Adaboost)      | 71.36%   | 71.50%    | 71.36% | 71.34%    | 0.81    |
+| Adaptive Boost (base model - logistic regression) | 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
+<!-- | Adaptive Boost (base model - decision tree) | 71.36%   | 71.50%    | 71.36% | 71.34%    | 0.81    | -->
 | Random Forest                | 71.69%   | 71.81%    | 71.69% | 71.68%    | 0.80    |
 | Gradient Boosting            | 71.52%   | 72.06%    | 71.52% | 71.41%    | 0.80    |
+| Naive Bayes        | 72.54%   | 72.54%    | 72.54% | 72.53%    | 0.80    |
 | Ensemble Classifier          | 73.94%   | 74.02%    | 73.94% | 73.94%    | 0.81    |
 
-From the above table, we can see that **logistic regression** and **support vector machines** outperform other models except "**Ensemble Classifier**" . On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made by random search.
+From the above table, we can see that **logistic regression** and **support vector machines** outperform other models. On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made by random search.
 
-Our "**Ensemble Classifier**" slightly outperforms all the other  models(by approximately \\(0.5 \% \\)).We believe that the other ensemble learning methods are not performing as well because the data is not enriched and complex enough to train them. This is also probably why we observed that for higher range of search space, the model over-fits and for relaxing the range to reduce over-fitting, the results are not as expected. The confusion matrices, learning curves and ROC curves of each of these methods are given below.
-### 5.1.3 Confusion Matrix
-
-#### Base Models
+### 5.1.2 Confusion Matrix
 
 <p>
   <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionCM" width="350"/>
-  <img src="./assets/images/confusion_matrix_dt.png" alt="DTCM" width="350"/>
- </p>
- <p>
-   <img src="./assets/images/confusion_matrix_knn.png" alt="KNNCM" width="350"/>
-  <img src="./assets/images/confusion_matrix_nb.png" alt="NBCM" width="350"/>
- </p>
- <p>
   <img src="./assets/images/confusion_matrix_svm.png" alt="SVMCM" width="350"/>
+  
  </p>
-
-#### Ensemble Models 
-<p>
+ <p>
+  <img src="./assets/images/confusion_matrix_dt.png" alt="DTCM" width="350"/>
+   <img src="./assets/images/confusion_matrix_knn.png" alt="KNNCM" width="350"/>
+ </p>
+ <p>
+  <img src="./assets/images/confusion_matrix_nb.png" alt="NBCM" width="350"/>
   <img src="./assets/images/confusion_matrix_rf.png" alt="RFCM" width="350"/>
+ </p>
+<p>
   <img src="./assets/images/confusion_matrix_gb.png" alt="GBCM" width="350"/>
- </p>
- <p>
-   <img src="./assets/images/confusion_matrix_lr_ada.png" alt="ADALRCM" width="350"/>
-  <img src="./assets/images/confusion_matrix_dt_ada.png" alt="ADADTCM" width="350"/>
- </p>
- <p>
-  <img src="./assets/images/confusion_matrix_ensemble.png" alt="EnsembleCM" width="350"/>
+  <img src="./assets/images/confusion_matrix_lr_ada.png" alt="ADALRCM" width="350"/>
  </p>
 
-### 5.1.4 Learning Curve
 
-#### Base Models
-
+### 5.1.3 Learning Curve
 <p>
   <img src="./assets/images/learning_curve_logistic_regression.png" alt="LogisticRegressionCurve" width="350"/>
-  <img src="./assets/images/learning_curve_dt.png" alt="DTCurve" width="350"/>
- </p>
- <p>
-   <img src="./assets/images/learning_curve_knn.png" alt="KNNCurve" width="350"/>
-  <img src="./assets/images/learning_curve_nb.png" alt="NBCurve" width="350"/>
- </p>
- <p>
    <img src="./assets/images/learning_curve_svm.png" alt="SVMCurve" width="350"/>
  </p>
-
-
--- Comments on kNN's learning curve --
-
-#### Ensemble Models
-
-<p>
-  <img src="./assets/images/learning_curve_rf.png" alt="RFCurve" width="350"/>
-  <img src="./assets/images/learning_curve_gb.png" alt="GBCurve" width="350"/>
+ <p>
+  <img src="./assets/images/learning_curve_dt.png" alt="DTCurve" width="350"/>
+   <img src="./assets/images/learning_curve_knn.png" alt="KNNCurve" width="350"/>
  </p>
  <p>
+ </p>
+<p>
+  <img src="./assets/images/learning_curve_nb.png" alt="NBCurve" width="350"/>
+  <img src="./assets/images/learning_curve_rf.png" alt="RFCurve" width="350"/>
+ </p>
+ <p>
+  <img src="./assets/images/learning_curve_gb.png" alt="GBCurve" width="350"/>
    <img src="./assets/images/learning_curve_lrada.png" alt="ADALRCurve" width="350"/>
-  <img src="./assets/images/learning_curve_dtada.png" alt="ADADTCurve" width="350"/>
  </p>
 
 
-
-### 5.1.5 ROC/AUC Curve
+### 5.1.4 ROC/AUC Curve
 
 #### Base Models
 <p>
