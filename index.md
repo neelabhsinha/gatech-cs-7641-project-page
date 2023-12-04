@@ -191,36 +191,22 @@ From the above table, we can see that **logistic regression** and **support vect
 
 ### 5.1.4 ROC/AUC Curve
 
-#### Base Models
 <p>
   <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionROC" width="350"/>
-  <img src="./assets/images/roc_curve_dt.png" alt="DTROC" width="350"/>
-  
- </p>
- <p>
- <img src="./assets/images/roc_curve_knn.png" alt="KNNROC" width="350"/>
-  <img src="./assets/images/roc_curve_nb.png" alt="NBROC" width="350"/>
- </p>
-  <p>
  <img src="./assets/images/roc_curve_svm.png" alt="SVMROC" width="350"/>
  </p>
-
-#### Ensemble Models
-
-<p>
-  <img src="./assets/images/roc_curve_rf.png" alt="RFROC" width="350"/>
-  <img src="./assets/images/roc_curve_gb.png" alt="GBROC" width="350"/>
-  
- </p>
  <p>
- <img src="./assets/images/roc_curve_lrada.png" alt="LRADAROC" width="350"/>
-  <img src="./assets/images/roc_curve_dtada.png" alt="DTADAROC" width="350"/>
+ <img src="./assets/images/roc_curve_dt.png" alt="DTROC" width="350"/>
+ <img src="./assets/images/roc_curve_knn.png" alt="KNNROC" width="350"/>
  </p>
   <p>
- <img src="./assets/images/roc_curve_ensemble.png" alt="ENSROC" width="350"/>
+    <img src="./assets/images/roc_curve_nb.png" alt="NBROC" width="350"/>
+  <img src="./assets/images/roc_curve_rf.png" alt="RFROC" width="350"/>
  </p>
-
-
+ <p>
+  <img src="./assets/images/roc_curve_gb.png" alt="GBROC" width="350"/>
+ <img src="./assets/images/roc_curve_lrada.png" alt="LRADAROC" width="350"/>
+ </p>
 
 
 ## 5.2 Impact of Forward Feature Selection
