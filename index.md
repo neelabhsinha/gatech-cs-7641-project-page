@@ -94,17 +94,13 @@ Using features extracted above, we train a binary classifier using various algor
 
 As we realize that the number of data can also be a cause of concern since World Cups happen once every four years in a space of two months, we generate artificial permutation of matches of two teams. To do this, we take a date \\(D\\) and team playing a match on that day \\(T_D\\). Then, for each team \\(T_D^i\\) in this set, if the team has played against a set \\(T_R\\) teams in the past, we generate a match between \\(T_D^i\\) and each member of set \\(T_R - T_D\\). After this, we select a random \\(N_A\\) set of matches from this and follow a semi-supervised learning [15] approach to train the classifier using labeled real matches and this unlabeled artificial matches to predict the results. We pass these unlabeled data points with the labels to iteratively predict the outcome of unlabeled points and add them to the training set if the confidence threshold of prediction is more than 0.75.
 
-### 4.2.1 Model Training
+### Model Training
 
 To select the features, we heuristically optimized \\(n_{ind}\\)=15 and \\(n_{h2h}\\)=15 by changing the values, training the models and analyzing the accuracy. We sweeped these values from 5 to 20 in steps of 5 and took the best combination.
 
 To train the model, we started with splitting our dataset into 80% Training Data and 20% Test Data.
 
 In all the learning algorithms employed we have a fixed set of hyperparameters (example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc). To tune these parameters we defined a search space and employed 2 types of searches, Randomized Search and Grid Search. Since this is a multivariate optimization problem, randomly sampling the parameters helps us narrow down the search space. We began with a Randomized Search in order to get to the vicinity of hyperparameters. Then, we conducted Grid Search in the proximity of the best performing solution of Randomized Search to fine tune a better performing set of hyperparameters. However, Grid Search did not yield significantly different results from the Randomized Search. Owing to the computational cost of Grid Search, we chose to run only Randomized Search. We did both of these using K-Fold Cross Validation with K = 5.
-### 4.2.2 Chosen Model Hyperparameters
-The following table lists the hyperparameters chosen for the models as determined by k-fold CV:
-
--- TABLE GOES HERE--
 
 ## 4.3 Unsupervised Learning
 ### Motivation 
@@ -368,9 +364,55 @@ From here, we can see that likely performance of all models are similar, as also
 ### A comparison of Hard and Soft Clustering Schemes
 
 ## Tournament Simulation with Grouping
--- Show the tournament graph with the best performing  classifier (KMeans) --
 
--- Show the tournament graph with the best performing  classifier (GMM) --
+We used unsupervised machine learning models, KMeans and GMM, to create the 8 FIFA groups that compete in the group stage of FIFA.
+
+For this, we generated 4 clusters with 8 teams each and picked one team from each cluster and put it to a group. The final results are displayed in the following section. 
+
+### KMeans Grouping Results
+Following 8 FIFA groups were generated using KMeans:
+
+
+| Group            | Team 1 | Team 2 | Team 3 | Team 4 |
+| ---------------- | -------- | --------- | ------ | --------- | 
+| A | Argentina | Switzerland | Tunisia | Wales |
+| B | Netherlands | Senegal | Serbia | Cameroon |
+| C | Croatia | Spain | Denmark | Saudi Arabia |
+| D | France | Germany | Poland | Canada |
+| E | Portugal | USA | Iran | Costa Rica |
+| F | Belgium | Uruguay | South Korea | Qatar |
+| G | England | Morocco | Japan | Ecuador |
+| H | Brazil | Mexico | Australia | Ghana |
+
+Using these groups, following are the predictions:
+
+Prediction using Logistic Regression:
+<img src="./assets/images/tournament_lr_kmeans.png" alt="Logistic Regression model using KMeans Grouping" width="1200"/>
+Prediction using Ensemble Model:
+<img src="./assets/images/tournament_ensemble_kmeans.png" alt="Ensemble model using KMeans Grouping" width="1200"/>
+
+### Gaussian Mixture Model Grouping Results
+Following 8 FIFA groups were generated using GMM:
+
+
+| Group            | Team 1 | Team 2 | Team 3 | Team 4 |
+| ---------------- | -------- | --------- | ------ | --------- | 
+| A | Qatar | Netherlands | England | Poland |
+| B | Ghana | Switzerland | Argentina | Australia |
+| C | Ecuador | Germany | Portugal | Tunisia |
+| D | Costa Rica | Morocco | Spain | Serbia |
+| E | Saudi Arabia | Denmark | USA | Iran |
+| F | Cameroon | Uruguay | France | Wales |
+| G | Canada | Senegal | Brazil | Japan |
+| H | South Korea | Mexico | Belgium | Croatia |
+
+Using these groups, following are the predictions:
+
+Prediction using Logistic Regression:
+<img src="./assets/images/tournament_lr_gmm.png" alt="Logistic Regression model using Gaussian Mixture Model Grouping" width="1200"/>
+Prediction using Ensemble Model:
+<img src="./assets/images/tournament_ensemble_gmm.png" alt="Ensemble model using Gaussian Mixture Model Grouping" width="1200"/>
+
 # 6 Scope for Improvement and Ideas for further exploration
 Based on our understanding we believe the following areas could be  explored further to improve our analysis and to also generate new ideas:
 1. **Ties** : Given our dataset we found that Ties/Draws are very difficult to predict with any reasonable accuracy. Could a different approach yield better results? For example if we were to predict the number of goals scored by each teams than just the win/loss probability with additional datasets could we make a more informed/accurate predicition of ties?
