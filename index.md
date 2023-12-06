@@ -353,7 +353,7 @@ From here, we can see that likely performance of all models are similar, as also
  <p>
   <img src="./assets/images/cluster_eda/kmeans_visual rank - mean_goal_concede.png" alt="Rank - Mean Goal Conceded" width="350"/>
   <img src="./assets/images/cluster_eda/kmeans_visual rank - mean_goal_score.png" alt="Rank - Mean Goal Scored" width="350"/>
- <p>
+ </p><p>
   <img src="./assets/images/cluster_eda/kmeans_visual rank - win_count.png" alt="Rank - Win Count" width="350"/>
   <img src="./assets/images/cluster_eda/kmeans_visual goal_scored - win_count.png" alt="Mean Goal Scored - Win Count" width="350"/>
  </p>
@@ -361,6 +361,7 @@ From here, we can see that likely performance of all models are similar, as also
  From the above images, we can see that the rank of the team seperates the datas the most. While the mean goals scored and mean goals conceded are also useful features to form clusters, win count of the team on the other hand actually worsens the clustering.  
 
 #### Metrics
+
 | Metric | Value |
 | ------ | ----- |
 | Silhouette Score | 0.4955 |
@@ -378,12 +379,13 @@ In the evaluation of the calusterings, we only used internal measures because we
  <p>
   <img src="./assets/images/cluster_eda/gmm_visual rank - mean_goal_concede.png" alt="Rank - Mean Goal Conceded" width="350"/>
   <img src="./assets/images/cluster_eda/gmm_visual rank - mean_goal_score.png" alt="Rank - Mean Goal Scored" width="350"/>
- <p>
+ </p><p>
   <img src="./assets/images/cluster_eda/gmm_visual rank - win_count.png" alt="Rank - Win Count" width="350"/>
   <img src="./assets/images/cluster_eda/gmm_visual goal_scored - win_count.png" alt="Mean Goal Scored - Win Count" width="350"/>
  </p>
 
 #### Metrics
+
 | Metric | Value |
 | ------ | ----- |
 | Silhouette Score | 0.4523 |
