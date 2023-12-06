@@ -251,7 +251,7 @@ We implement semi-supervised learning [15] as described in section 4.2 on Logist
 
 #### 5.5.2. Semi-supervised vs Supervised Learning
 
-##### 5.452.1. Model Performance
+##### 5.5.2.1. Model Performance
 We analyze the performance of the various classification schemes on our dataset as shown below:
 
 | Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
