@@ -10,11 +10,11 @@ FIFA World Cup is the most popular sports event in the world. As shown in the im
 
 FIFA World Cup happens once in four years with 32 participating teams. First, 8 groups are created with 4 teams each. In every group, each team plays the other once. 3 points are given to the winner, 0 to the loser, and 1 point each is awarded to the teams in case of a draw. After this, top 2 teams from each group qualify for the knockout stages.From the knockout the tournament trasnforms into single-death elimination mode.
 
-In this work, we predict the FIFA World Cup matches and suggest an ideal grouping of teams for a balanced tournament using past match results and rankings. In summary, we use the data to generate and extract relevant features, and then use multiple supervised techniques to predict winner of a match. We implement multiple algorithms and do a thorough comparison of each of them. Apart from real data, we also explore creating fictitious matches and use semi-supervised learning in an attempt to improve the models. Alongside match predictions, we also use unsupervised clustering techniques to create groups that can facilitate a good tournament. Through these two processes, we create an end-to-end tool that can take in participating teams, build groups, predict results of matches and ultimately, predict a complete tournament.
+In this work, we predict the FIFA World Cup matches and attempt to propose a method to generate ideal grouping of teams for a balanced tournament using past match results and rankings which can be used to faciliate a tournament end-to-end. In summary, we use the data to generate and extract relevant features, and then use multiple supervised techniques to predict winner of a match. We implement multiple algorithms and do a thorough comparison of each of them. Apart from real data, we also explore creating fictitious matches and use semi-supervised learning in an attempt to improve the models. Alongside match predictions, we also use unsupervised clustering techniques to create groups that can facilitate a good tournament. Through these two processes, we create an end-to-end tool that can take in participating teams, build groups, predict results of matches and ultimately, predict a complete tournament.
 
 # 2. Related Work
 
-The problem of predicting game outcomes especially in Football (also called Soccer in North America) is usually handled as a classification problem [4],[6]. Techniques ranging from logistic regression [4] to RNN/Deep Learning [6] have been employed for this task. Furthermore the problem of outcome prediction is very similar across other team sports [1],[3]. A comprehensive survey of the use of techniques across the various sports is described in [3].
+The problem of predicting game outcomes especially in Football (also called Soccer in North America) is usually handled as a classification problem [4] [6]. Techniques ranging from logistic regression [4] to RNN/Deep Learning [6] have been employed for this task. Furthermore the problem of predicting outcome of a match is also extensible other team sports [1],[3] given usage of appropriate features. A comprehensive survey of the use of techniques across the various sports is described in [3].
 
 # 3. Method Overview
 
@@ -23,9 +23,11 @@ The problem of predicting game outcomes especially in Football (also called Socc
 A tournament \\(\mathcal{T}(\boldsymbol{T},\boldsymbol{G},\boldsymbol{T_b})\\) is a set of teams \\(\boldsymbol{T}\\) participating in games \\(\boldsymbol{G}\\) (either a winner or tie (only in  group stage)) over stages \\(\boldsymbol{b} = 0,1,2,...\\) ,with a set of (\\(\boldsymbol{T_b}\\)) teams qualifying to play them. Our goal is:
 
 1. **Outcome prediction** : \\(\forall G(T_i,T_j) \in \boldsymbol{G}\\) we predict \\(\hat{G}(T_i,T_j)\\) accurately.
-2. **Group Prediction** : Given  \\(\boldsymbol{T}\\) teams, we assign 8 groups \\(\boldsymbol{g}\\) such that \\(\|g_i\| = 4\\) and each \\(T_i \Rightarrow g_i\\). We select the groups such that stronger teams are not placed together to facilitate an interesting tournament. 
+2. **Grouping of Teams** : Given  \\(\boldsymbol{T}\\) teams, we assign 8 groups \\(\boldsymbol{g}\\) such that \\(\|g_i\| = 4\\) and each \\(T_i \Rightarrow g_i\\). We select the groups such that stronger teams are not placed together in a single tournament to faciliate a more competitive tournament towards the later ellimination stages rather than stronger teams staying in same groups and getting elliminated early.
 
-The notion of "accuracy" in the case of outcome prediction is gauged via metrics like "**Classification Accuracy**","**Precision/Recall**","**ROC/AUC score**" ,"**Confusion Matrix**" etc. The quality of the tournament groups on the other hand is established via clustering metrics like "**betaCV**" ,"**NormalizedCut**" , "**D-B Index** " and **Silhouette Score** .
+For match prediction, we use supervised classification models and evaluate it using all standard metrics like accuracy, precision, recall, F1-score and ROC-AUC. We do not have any bias towards optimizing false positives over true negatives and vice versa due to the nature of our problem.
+
+To evaluate our unsupervised clustering method for grouping of teams, we use clustering techniques and evaluate it using internal measures only. We do not take external measures because for our use case, there is no ground truth of groups. Even the groups FIFA assigns are using randomization across different pots. There can actually be multiple correct answers. So, the only evaluation we feel is necessary is how close are the groups. How we do this is described in detail in the following section.
 
 ## 3.2 Overall Pipeline
 
@@ -60,7 +62,7 @@ We explicitly omit ties from our use case  because of the following two reasons 
 1. It did not correlate well with any feature or any combinations thereof from the available dataset that we have both during preliminary analysis and our attempts at predicting it using various ML techniques.
 2. We hypothesize that the business side of the tournament is a knockout. For matches beyond the group stage in case of a tie, there is a penalty shootout, the outcome of which is difficult to predict with the data we have. Therefore, instead of settling for a random choice, we would instead select the team with higher probability of a win.
 
-In the case of **Unsupervised Learning** we use the columns marked "Individual" as the feature set.
+In the case of Unsupervised techniques for grouping of teams, we use the columns marked "Individual" with a few changes. We used rank of the team before the start of the world cup, mean and std of goals scored and conceded as features. There was no head-to-head in this scenario as we needed performance of each team individually to group them based on their potential.
 
 #### 4.1.3 Exploratory Data Analysis
 
@@ -88,25 +90,13 @@ We particularly want to visualize the distribution of goals scored/conceded for 
 
 As we can see, these features are separable linearly at the tail ends on each side and have an overlap region in between where the outcome can not be determined by these features alone. This is where the ranking distributions and other features help. In head to head, the behavior is similar.
 
-## 4.2 Models
+## 4.2 Match Outcome Prediction - Supervised Classification
 
-### 4.2.1 Supervised Learning Models
-
-Using features extracted above, we train a binary classifier using various algorithms. To start, we implement Logistic Regression [8], Support Vector Machines [9], Decision Tree [10] , Gaussian Naive Bayes [19] and K-Nearest Neighbours [18] which are simple, efficient and interpretable algorithms and then move to ensemble classifiers like Random Forest [11], Gradient Boost [12] and Adaptive Boosting [20] using Logistic Regression as base classifier to predict the probability of team labeled as home winning the match. We also create an 'Ensemble Classifier' which combines the tained models and makes inference by majority voting and returns the predicted probability for class labels as the average of all constituent models' and compare its performance with the others. In working with the classifier, we also experiment with forward feature selection [13] to select best features from the initial feature set, and also do Principal Component Analysis [14] to reduce the dimensionality of features. We tune all these methods by defining a search space and using Randomized Search followed by Grid Search using k-fold cross validation.
+Using features extracted as described in Section 4.1.2., we train a binary classifier using various algorithms. To start, we implement Logistic Regression [8], Support Vector Machines [9], Decision Tree [10] , Gaussian Naive Bayes [19] and K-Nearest Neighbours [18] which are simple, efficient and interpretable algorithms and then move to ensemble classifiers like Random Forest [11], Gradient Boost [12] and Adaptive Boosting [20] using Logistic Regression as base classifier to predict the probability of team labeled as home winning the match. We also create an 'Ensemble Classifier' which combines the tained models and makes inference by majority voting and returns the predicted probability for class labels as the average of all constituent models' and compare its performance with the others. In working with the classifier, we also experiment with forward feature selection [13] to select best features from the initial feature set, and also do Principal Component Analysis [14] to reduce the dimensionality of features. We tune all these methods by defining a search space and using Randomized Search followed by Grid Search using k-fold cross validation.
 
 As we realize that the number of data can also be a cause of concern since World Cups happen once every four years in a space of two months, we generate artificial permutation of matches of two teams. To do this, we take a date \\(D\\) and team playing a match on that day \\(T_D\\). Then, for each team \\(T_D^i\\) in this set, if the team has played against a set \\(T_R\\) teams in the past, we generate a match between \\(T_D^i\\) and each member of set \\(T_R - T_D\\). After this, we select a random \\(N_A\\) set of matches from this and follow a semi-supervised learning [15] approach to train the classifier using labeled real matches and this unlabeled artificial matches to predict the results. We pass these unlabeled data points with the labels to iteratively predict the outcome of unlabeled points and add them to the training set if the confidence threshold of prediction is more than 0.75.
 
-### 4.2.2 Unsupervised Learning Models
-
-We employed unsupervised machine learning techniques, specifically KMeans[21] and Gaussian Mixture Model (GMM)[22], to organize the 32 participating FIFA teams into eight distinct groups for the group stage of the tournament.
-
-For KMeans clustering, we created four clusters, each comprising eight teams. To form the groups, we assigned one team from each cluster based on the indices of the teams. For instance, the 0th index members from all clusters constituted the first group, the 1st index members formed the second group, and so forth. To ensure precisely eight groups in each KMeans cluster, we utilized Constrained KMeans.
-
-In the case of GMM, we maintained eight teams within each cluster by selecting teams with the highest probability. Suppose there were 10 teams with the maximum probability for cluster 1; we assigned cluster 1 only to the top eight teams among these, ensuring the desired number of groups.
-
-These unsupervised methods allowed us to structure the initial stage of the tournament, contributing to a fair and balanced competition among the participating teams.
-
-### 4.2.3 Model Training
+### 4.2.1. Model Training
 
 To select the features, we heuristically optimized \\(n_{ind}\\)=15 and \\(n_{h2h}\\)=15 by changing the values, training the models and analyzing the accuracy. We sweeped these values from 5 to 20 in steps of 5 and took the best combination.
 
@@ -114,20 +104,28 @@ To train the model, we started with splitting our dataset into 80% Training Data
 
 In all the learning algorithms employed we have a fixed set of hyperparameters (example penalty and 'c' for logistic regression, number of trees/tree depth/sampling rate for Random Forest etc). To tune these parameters we defined a search space and employed 2 types of searches, Randomized Search and Grid Search. Since this is a multivariate optimization problem, randomly sampling the parameters helps us narrow down the search space. We began with a Randomized Search in order to get to the vicinity of hyperparameters. Then, we conducted Grid Search in the proximity of the best performing solution of Randomized Search to fine tune a better performing set of hyperparameters. However, Grid Search did not yield significantly different results from the Randomized Search. Owing to the computational cost of Grid Search, we chose to run only Randomized Search. We did both of these using K-Fold Cross Validation with K = 5.
 
-## 4.3 Unsupervised Learning
-### Motivation 
-For the FIFA world cup the group assignment is done in a ceremony via random draws without replacement on 4 "pots" of teams [16]. We explore whether there is a way to decide the tournament groups based on grouping teams of similar strength in a cluster but assigning them to different groups so that the overall tournament is balanced . The FIFA "pots" roughly emulate this via grouping teams in order of their rankings,however the group assignment is still done randomly. However we would be using additional features instead of just ranking to determine the clusters.Our guiding assumption for this exercise is that more balanced tournaments would be more interesting to watch and drive the popularity and revenue further. 
+## 4.3. Grouping of Participating Teams - Unsupervised Clustering
 
-Given 32 teams and 8 groups and assuming the group numbers didn't matter the total number of ways to randomly form 8 distinct groups of 4 teams each would be \\(\frac{32!}{(4!)^88!} \sim 6 \times 10^{19}\\) . The heuristics stated above allow us to explore an exponentially smaller subset for our search . The notion of team strength is extracted and evaluated via Unsupervised Learning Techniques detailed below .
-### Clustering Techniques 
-Under our clustering schemes we first divide all the teams in 4 clusters of 8 teams each with the Unsupervised Technique and then we assign one team from each cluster to a group.The details for this assignment are discussed below:
+The group assignment of FIFA World Cups are done in a ceremony via random draws without replacement on 4 pots of teams [16]. We explore whether there is a way to decide the tournament groups based on grouping teams of similar strength in a cluster but assigning them to different groups so that the overall tournament is balanced . The FIFA pots roughly emulate this via grouping teams in order of their rankings, however, the group assignment is still done randomly. Instead, we use additional features to determine the clusters. Our guiding assumption for this exercise is we do not want to keep similar teams in the same groups so that most of the stronger teams can qualify and the tournament is more competitive in the later stages.
 
-1.**Constrained K-means** : This is a variation of the K-means clustering algorithm where we can control the cluster size[17]. Here we set the minimum and maximum of each cluster size to 8 simultaneousy for our task.The cluster to group assignment is done by sorting teams in ascending/descending order in terms of distance from the center of their repsective clusters and taking the top team from each cluster iteratively without replacement till we have 8 groups.
+Given 32 teams and 8 groups and assuming the group numbers didn't matter the total number of ways to randomly form 8 distinct groups of 4 teams each would be \\(\frac{32!}{(4!)^88!} \sim 6 \times 10^{19}\\) . The heuristics stated above allow us to explore an exponentially smaller subset for our search. The notion of team strength is extracted and evaluated via Unsupervised Learning Techniques detailed below.
 
-2.**GMM** : We compare and contrast the above scheme which is a hard clustering scheme with Gaussian Mixture Models which is a soft clustering scheme . Various initialization schemes are tried and the one that yields the best clustering metrics is chosen.In this case for each gaussian center we order the points by the cluster responsibilty at each cluster and the top elements from each cluster is selected and put in the same group one by one till we exhaust all teams.
+Since clustering essentially groups similar teams together, and we have 8 groups with 4 teams in each group, we create four clusters. This groups similar teams together. For one cluster, we start assigning each team to separate groups until eight groups are done. How we do this is different for each algorithm and we describe it below.
+
+### 4.3.1. Clustering Techniques Used
+
+We employed Constrained K-Means, a variation of KMeans[21] and Gaussian Mixture Model (GMM)[22], to organize the 32 participating FIFA teams into eight distinct groups for the group stage of the tournament. As stated earlier, we used rank of the team before the start of the world cup, mean and std of goals scored and conceded as features.
+
+Constrained K-means is a variation of the K-means clustering algorithm where we can control the cluster size [17]. Here we set the minimum and maximum of each cluster size to 8 simultaneousy for our task. This automatically gives us 8 teams per cluster. We assign these 8 teams in one cluster to 8 different groups, where the strongest team in that cluster is the one closest to the cluster center. This is done for each cluster, yeilding groups where teams are of different skill level to achieve our objective.
+
+In the case of GMM, we get responsibility values for each data point in each cluster. We used to this to satisfy our constraint. For the first cluster, we first maintained eight teams within the cluster by selecting teams with the top-8 highest responsibility. Suppose there were 10 teams with the maximum probability for cluster 1; we assigned cluster 1 only to the top eight teams among these, ensuring the desired number of groups, and moved the remaining two to the other. This has a cascading effect of course, so we take only the top-p remaining teams in the next cluster, and so on. Because there are only 32 teams, this will eventually converge and give us four pots of 8 teams each. We assign these teams of one pot to separate groups for each pot to achieve our objective.
+
+The reason to select these algorithms was our constraint of having four clusters and eight teams in one cluster. Each of those two gave a way to handle this as described above which was not offered by other clustering algorithms.
+
+
 # 5 Experiments
 
-## 5.1 Supervised Model Performance
+## 5.1 Performance of Match Outcome Predictors
 
 ### 5.1.1 Base Models
 
@@ -139,13 +137,12 @@ We analyze the performance of the various classification schemes on our dataset 
 | SVM                | 73.38%   | 73.51%    | 73.38% | 73.37%    | 0.81    |
 | Decision Tree      | 70.29%   | 70.46%    | 70.29% | 70.26%    | 0.77    |
 | kNN                | 71.41%   | 71.51%    | 71.41% | 71.40%    | 0.80    |
-| Adaptive Boost (base model - logistic regression) | 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
+| Gaussian Naive Bayes        | 72.54%   | 72.54%    | 72.54% | 72.53%    | 0.80    |
 | Random Forest                | 71.69%   | 71.81%    | 71.69% | 71.68%    | 0.80    |
 | Gradient Boosting            | 71.52%   | 72.06%    | 71.52% | 71.41%    | 0.80    |
-| Gaussian Naive Bayes        | 72.54%   | 72.54%    | 72.54% | 72.53%    | 0.80    |
-| Ensemble Classifier          | 73.94%   | 74.02%    | 73.94% | 73.94%    | 0.81    |
+| Adaptive Boost (base model - logistic regression) | 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
 
-From the above table, we can see that **logistic regression** and **support vector machines** outperform other models. On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made by random search.
+From the above table, we can see that logistic regression outperforms all models with support vector machines a close second. On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made by random search.
 
 ### 5.1.2 Confusion Matrix
 
@@ -209,22 +206,22 @@ From the above table, we can see that **logistic regression** and **support vect
  </p>
 
 
-## 5.2 Impact of Forward Feature Selection
+## 5.2 Impact of Forward Feature Selection on Match Outcome Prediction
 
 Forward feature selection is the iterative addition of features to the model one at a time. The process starts with an empty set of features and gradually incorporates the most relevant features based on certain criteria, in our case the increase in accuracy of the model based on the set of features being added. Post forward feature selection, we found the accuracy of each model to be drop by approximately 3-5%. Due to this, we did not move forward with employing this technique. A possible hypothesis and explanation for this behavior is that individual features had lesser contribution to the accuracy of the model, and were enforced by other features of the dataset, thus leading to better accuracy without forward feature selection.
 
-## 5.3 Impact of Principal Component Analysis
+## 5.3 Impact of Principal Component Analysis on Match Outcome Prediction
 
 To analyze the impact of dimensionality reduction, we perform PCA on our features and run logistic regression and random forest on the features after doing PCA. After that, we select first five and first fifteen components and train the models using this data. The accuracy of each of these are given below -
 
 |Method              |n=5     |n=15    |raw features|
 |--------------------|--------|--------|------------|
-|Logistic Regression | 71.75% | 72.70% | 73.16%     |
-|Random Forest       | 72.76% | 72.53% | 71.86%     |
+|Logistic Regression | 71.75% | 72.70% | 73.49%     |
+|Random Forest       | 72.76% | 72.53% | 71.69%     |
 
 Interestingly, the trend in both algorithms are opposite. With logistic regression, more features/components yield more accuracy and with random forest, the vice versa. This probably suggests that Logistic Regression, which was working optimally before starts to suffer when we reduce the dimensions as it gets less information, whereas Random Forest, which was probably over-fitting originally despite hyperparameter tuning now is able to better learn the representation with reducing dimensionality. However, even with n=5 (best case), it is not able to outperform logistic regression with raw features.
 
-## 5.4 Impact of Semi-supervised Learning
+## 5.4 Impact of Semi-supervised Learning on Match Outcome Prediction
 
 #### 5.4.1 Motivation and Procedure
 
@@ -233,14 +230,15 @@ Given the infrequency of the World Cup occurring every four years, the limited a
 We implement semi-supervised learning [15] as described in section 4.2 on Logistic Regression and Random Forest and the results are below.
 
 #### 5.4.2 Semi-supervised vs Supervised Learning
+
 ##### 5.4.2.1 Model Performance
 We analyze the performance of the various classification schemes on our dataset as shown below:
 
 | Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
 | ------------------ | -------- | --------- | ------ | --------- | ------- |
-| Logistic Regression (Supervised)| 73.16%   | 73.30%    | 73.16% | 73.14%    | 0.81    |
+| Logistic Regression (Supervised) | 73.49%   | 73.59%    | 73.49% | 73.49%    | 0.81    |
 | Logistic Regression (Semi Supervised) | 71.46%     | 71.92%     | 71.47%  | 71.37%      | 0.79    |
-| Random Forest (Supervised)     | 71.86%   | 72.00%    | 71.86% | 71.84%    | 0.79    |
+| Random Forest (Supervised) | 71.69%   | 71.81%    | 71.69% | 71.68%    | 0.80    |
 | Random Forest (Semi Supervised)      | 71.65%     | 71.77%      | 71.55%   | 71.6%      | 0.77    |
 
 As we can see, there is no significant improvement in semi supervised learning over the supervised results. The possible reason is that these hyptohetical matches learn from a similar data representation and do not add a lot of variety to the dataset. Thus, only increasing the number of data points but not adding a lot of extra information probably impact the model slightly negatively. The confusion matrix and ROC curve for logistic regression supervised vs. semi-supervised are given below.
@@ -258,7 +256,7 @@ As we can see, there is no significant improvement in semi supervised learning o
   <img src="./assets/images/semi_supervised/roc_curve_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
  </p>
 
-## 5.5 Ensemble Classifier
+## 5.5 Ensemble Classifier for Match Outcome Prediction
 
 We tried taking all the classifiers that we trained and create an ensemble using it. This did not require any training as we loaded all the trained models. Precisely, we took Support Vector Machines, Decision Trees, Logistic Regression, KNN and Gaussian Naive Bayes classifiers as they are widely different in nature and should cover a large scenarios. 
 
@@ -279,7 +277,7 @@ For prediction, we employed the technique of majority voting where the final pre
 
  From the above, we can see that there was a slight improvement on the performance but not by a lot. This further shows that the correct and incorrect predictions across all models are largely the same and thus, the accuracies that we get are the maximum we can achieve using the available data and features.
 
-## 5.6 Tournament Simulation
+## 5.6 Tournament Simulation of 2022 World Cup using Match Outcome Predictors
 
 ### 5.6.1 Tournament Schedule
 
@@ -342,9 +340,20 @@ We have analysed the results using 5 different models:
 
 
 From here, we can see that likely performance of all models are similar, as also indicated by the close performance scores. One reason why in reality Brazil did not win was because it lost to Croatia over penalty shootout on the given day. But, overall, it was a stronger team and more likely to win also. Argentina, the eventual winners are in the finals here as well. And, statistically, Brazil were a stronger team based on the features that we are using. So, in conclusion, we would say that our tournament predictor works well within error bounds.
-## 5.7 Unsupervised Learning
-### Clustering Results (KMeans)
-#### Images
+
+## 5.7 Evaluation of Clustering Techniques to Group the Teams
+
+As mentioned before, we only used internal measures to evaluate clustering. The objective was to cluster the teams so that we can get a group where stronger teams are not together to ensure that later part of the tournament is more competitive. In order to acheive this we want the clusters to be as compact as posssbible so that they can be moved to different froups. So, we evaluate our clustering algorithms using Silhoutte Score, DB-Index and Beta-CV measure. The results are given below -
+
+| Algorithm | Silhoutte Score | Davies-Bouldin Index | Beta-CV Measure |
+| --------- | --------------- | -------------------- | --------------- |
+| Constrined K-Means | 0.4955 | 0.5128 | 0.2495 |
+| GMM | 0.4523 | 0.5851 | 0.2463 |
+
+The Constrained K-Means algorithm shows a higher Silhouette Score (0.4955) compared to GMM (0.4523), indicating better cluster cohesion and separation in the former. Similarly, it has a lower Davies-Bouldin Index (0.5128) than GMM (0.5851), suggesting more compact and well-separated clusters. However, the Beta-CV Measure is marginally better for GMM (0.2463) than for Constrained K-Means (0.2495), implying slightly tighter clustering in the GMM. Overall, the Constrained K-Means seems to perform better in terms of cluster separation and cohesion, while GMM has a slight edge in cluster compactness. The reason can be because the constrained KMeans is optimized to handle a constrained clustering for a problem like us while for GMM, we use a naive greedy approach to separate the groups.
+
+
+The visualizations related to final clusters formed are given below for Constrained K-Means clustering:
 
 <p>
   <img src="./assets/images/cluster_eda/kmeans_visual cluster.png" alt="kmeans cluster visual" width="400"/>
@@ -358,20 +367,10 @@ From here, we can see that likely performance of all models are similar, as also
   <img src="./assets/images/cluster_eda/kmeans_visual goal_scored - win_count.png" alt="Mean Goal Scored - Win Count" width="350"/>
  </p>
 
- From the above images, we can see that the rank of the team seperates the datas the most. While the mean goals scored and mean goals conceded are also useful features to form clusters, win count of the team on the other hand actually worsens the clustering.  
+ From the above images, we can see that the rank of the team seperates the datas the most while the mean goals scored and mean goals conceded are also useful features to form clusters.  
 
-#### Metrics
+The visualizations related to final clusters formed are given below for GMM:
 
-| Metric | Value |
-| ------ | ----- |
-| Silhouette Score | 0.4955 |
-| Davies-Bouldin Index  | 0.5128 |
-| Beta CV measure | 0.2495 |
-
-In the evaluation of the calusterings, we only used internal measures because we don't have a ground truth to evaluate our external clustering measure, the objective of our clusters was not to align a external reference in the first place, it was to cluster the teams so that we can get a fairly distributed group to ensure that the game is fair. In order to acheive this we want the clusters to be as compact as posssbible. From the metrics we have obtained, with a high Silhouette Score and low Beta CV measure, we can sure see that the clusters we have gotten are well matched to their own clusters, which can also be seen in the images. 
-
-### Clustering Results (GMM)
-#### Images
  <p>
   <img src="./assets/images/cluster_eda/gmm_visual cluster.png" alt="gmm cluster visual" width="400"/>
   <img src="./assets/images/cluster_eda/gmm_visual goal_scored - goal_concede.png" alt="Mean Goal Scored - Mean Goal Conceded" width="350"/>
@@ -384,25 +383,13 @@ In the evaluation of the calusterings, we only used internal measures because we
   <img src="./assets/images/cluster_eda/gmm_visual goal_scored - win_count.png" alt="Mean Goal Scored - Win Count" width="350"/>
  </p>
 
-#### Metrics
+## 5.8. End-to-end Tournament Simulation with Grouping
 
-| Metric | Value |
-| ------ | ----- |
-| Silhouette Score | 0.4523 |
-| Davies-Bouldin Index  | 0.5851 |
-| Beta CV measure | 0.2463 |
-
-### A comparison of Hard and Soft Clustering Schemes
-
-From the metrics of these two unsupervised clusters we can see that the results of hard clustering and soft clustering ar similar, which means that our the features have a spherical shape.
-
-## Tournament Simulation with Grouping
-
-We used unsupervised machine learning models, KMeans and GMM, to create the 8 FIFA groups that compete in the group stage of FIFA.
+We used unsupervised machine learning models, Constrained K-Means and GMM, to create the 8 FIFA groups that compete in the group stage of FIFA.
 
 For this, we generated 4 clusters with 8 teams each and picked one team from each cluster and put it to a group. The final results are displayed in the following section. 
 
-### KMeans Grouping Results
+### 5.8.1 Grouping of Teams using Constrained K-Means
 Following 8 FIFA groups were generated using KMeans:
 
 
@@ -417,14 +404,14 @@ Following 8 FIFA groups were generated using KMeans:
 | G | England | Morocco | Japan | Ecuador |
 | H | Brazil | Mexico | Australia | Ghana |
 
-Using these groups, following are the predictions:
+Using these groups, following are the predictions for the single-ellimination phase using Logistic Regression and Ensemble Classifier, two of our best performing models:
 
 Prediction using Logistic Regression:
 <img src="./assets/images/tournament_lr_kmeans.png" alt="Logistic Regression model using KMeans Grouping" width="1200"/>
 Prediction using Ensemble Model:
 <img src="./assets/images/tournament_ensemble_kmeans.png" alt="Ensemble model using KMeans Grouping" width="1200"/>
 
-### Gaussian Mixture Model Grouping Results
+### Grouping of Teams using GMM
 Following 8 FIFA groups were generated using GMM:
 
 
@@ -448,22 +435,22 @@ Prediction using Ensemble Model:
 
 # 6 Scope for Improvement and Ideas for further exploration
 Based on our understanding we believe the following areas could be  explored further to improve our analysis and to also generate new ideas:
-1. **Ties** : Given our dataset we found that Ties/Draws are very difficult to predict with any reasonable accuracy. Could a different approach yield better results? For example if we were to predict the number of goals scored by each teams than just the win/loss probability with additional datasets could we make a more informed/accurate predicition of ties?
-2. **True Tournament Prediction** : In our case we predicted the tournament outcome using a supervised classifier for predicting each match . Could we create a different kind of predictor that takes in the group of teams participating and predicts the full tournament with brackets while maintaining reasonable accuracy? 
-3. **Team features using Player data** : For this project we extracted the relevant team features using past matches' data to understand/approximate the various defensive/offensive attributes a team might have.The same could be established via combining  the attributes of the relevant player(s).For example with everything remaining the same, a goalkeeper with a poor record may lower the defensive attributes of the team(this is not always desirable but sometimes forced because of injuries/other problems).Collating player data and using them to build team features is another area one could explore.
+1. Ties: Given our dataset we found that Ties/Draws are very difficult to predict with any reasonable accuracy. We can predict ties with a different approach, like predicting the number of goals scored by each teams than just the win/loss probability with additional datasets could we make a more informed/accurate predicition of ties. Also, in case a tie occurs, there should be ways to predict penalty shootouts using additional data.
+2. Team features using Player data*: For this project we extracted the relevant team features using past matches' data to understand/approximate the various defensive/offensive attributes a team might have.The same could be established via combining  the attributes of the relevant player(s).For example with everything remaining the same, a goalkeeper with a poor record may lower the defensive attributes of the team(this is not always desirable but sometimes forced because of injuries/other problems).Collating player data and using them to build team features is another area one could explore.
 
 Most of the ideas and techniques employed in our project could be applied to other team based sports and their tournaments as well with some modifications ,and hence it would be an interesting exercise to do a comparative analysis to gauge the relative performance of different ML algorithms on different team sports.
+
 # 7 Project Timeline and Responsibilities
 
-## 7.1 Contributions for the Mid-Term
+## 7.1 Contributions from Mid-term to Final Submission
 
 | Team Member | Responsibility |
 |-------------|----------------|
-| Ananya Sharma |  Logistic Regression, Results Evaluation and Analysis |
-| Apoorva Sinha | Feature Selection, Dimensionality Reduction, Results Evaluation and Analysis |
-| Neelabh Sinha |  kNN,Naive Bayes, Decision Tree, Gradient Boost, Random Forest, SVM,AdaBoost, Results Evaluation and Analysis |
-| Snigdha Verma | Unsupervised Learning-GMM,Tournament Prediction Pipeline, Results Evaluation and Analysis |
-| Yu- Chen Lin |  Unsupervised Learning- Constrained Kmeans,Test data annotation, Results Evaluation and Analysis |
+| Ananya Sharma |  KNN, Gaussian Naive Bayes, Results Evaluation and Analysis, Report, Presentation |
+| Apoorva Sinha | Feature Selection, Dimensionality Reduction, Results Evaluation and Analysis, Report, Presentation |
+| Neelabh Sinha |  Ensemble Classifier, AdaBoost, Results Evaluation and Analysis, Report, Presentation |
+| Snigdha Verma | GMM, Tournament Prediction Pipeline, Results Evaluation and Analysis, Report, Presentation |
+| Yu- Chen Lin |  Constrained K-Means, Generating Visualizations, Results Evaluation and Analysis, Report, Presentation |
 
 ## 7.2 Project Gantt Chart
 
