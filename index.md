@@ -344,7 +344,8 @@ We have analysed the results using 5 different models:
 From here, we can see that likely performance of all models are similar, as also indicated by the close performance scores. One reason why in reality Brazil did not win was because it lost to Croatia over penalty shootout on the given day. But, overall, it was a stronger team and more likely to win also. Argentina, the eventual winners are in the finals here as well. And, statistically, Brazil were a stronger team based on the features that we are using. So, in conclusion, we would say that our tournament predictor works well within error bounds.
 ## 5.7 Unsupervised Learning
 ### Clustering Results (KMeans)
--- 2D/3D scatter plot with cluster results (preferably PCAd) --
+#### Images
+
 <p>
   <img src="./assets/images/cluster_eda/kmeans_visual cluster.png" alt="kmeans cluster visual" width="400"/>
   <img src="./assets/images/cluster_eda/kmeans_visual goal_scored - goal_concede.png" alt="Mean Goal Scored - Mean Goal Conceded" width="350"/>
@@ -357,14 +358,19 @@ From here, we can see that likely performance of all models are similar, as also
   <img src="./assets/images/cluster_eda/kmeans_visual goal_scored - win_count.png" alt="Mean Goal Scored - Win Count" width="350"/>
  </p>
 
+ From the above images, we can see that the rank of the team seperates the datas the most. While the mean goals scored and mean goals conceded are also useful features to form clusters, win count of the team on the other hand actually worsens the clustering.  
+
+#### Metrics
 | Metric | Value |
 | ------ | ----- |
 | Silhouette Score | 0.4955 |
 | Davies-Bouldin Index  | 0.5128 |
 | Beta CV measure | 0.2495 |
 
+In the evaluation of the calusterings, we only used internal measures because we don't have a ground truth to evaluate our external clustering measure. In addition, the objective of our clusters were not used to align to a external reference in the first place, it is to cluster the teams so that we can get a fairly distributed group to ensure that the game is fair. From the metrics we have obtained, we can see that the clusters we have gotten are compact and are well matched to their own clusters. 
+
 ### Clustering Results (GMM)
--- 2D/3D scatter plot with cluster results (preferably PCAd) --
+#### Images
  <p>
   <img src="./assets/images/cluster_eda/gmm_visual cluster.png" alt="gmm cluster visual" width="400"/>
   <img src="./assets/images/cluster_eda/gmm_visual goal_scored - goal_concede.png" alt="Mean Goal Scored - Mean Goal Conceded" width="350"/>
@@ -377,6 +383,7 @@ From here, we can see that likely performance of all models are similar, as also
   <img src="./assets/images/cluster_eda/gmm_visual goal_scored - win_count.png" alt="Mean Goal Scored - Win Count" width="350"/>
  </p>
 
+#### Metrics
 | Metric | Value |
 | ------ | ----- |
 | Silhouette Score | 0.4523 |
@@ -384,6 +391,8 @@ From here, we can see that likely performance of all models are similar, as also
 | Beta CV measure | 0.2463 |
 
 ### A comparison of Hard and Soft Clustering Schemes
+
+From the metrics of these two unsupervised clusters we can see that the results are similar, which confirms that the data is compact and consistent.
 
 ## Tournament Simulation with Grouping
 
