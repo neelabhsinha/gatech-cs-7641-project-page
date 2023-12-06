@@ -392,7 +392,7 @@ In the evaluation of the calusterings, we only used internal measures because we
 
 ### A comparison of Hard and Soft Clustering Schemes
 
-From the metrics of these two unsupervised clusters we can see that the results are similar, which confirms that the data is compact and consistent.
+From the metrics of these two unsupervised clusters we can see that the results of hard clustering and soft clustering ar similar, which means that our the features have a spherical shape.
 
 ## Tournament Simulation with Grouping
 
