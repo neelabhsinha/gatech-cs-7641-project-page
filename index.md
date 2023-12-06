@@ -346,11 +346,21 @@ From here, we can see that likely performance of all models are similar, as also
 ### Clustering Results (KMeans)
 -- 2D/3D scatter plot with cluster results (preferably PCAd) --
 
--- DB/S-H/N-C/bCV scores here --
+| Metric | Value |
+| ------ | ----- |
+| Silhouette Score | 0.4955 |
+| Davies-Bouldin Index  | 0.5128 |
+| Beta CV measure | 0.2495 |
+
 ### Clustering Results (GMM)
 -- 2D/3D scatter plot with cluster results (preferably PCAd) --
 
--- DB/S-H/N-C/bCV scores here --
+| Metric | Value |
+| ------ | ----- |
+| Silhouette Score | 0.4523 |
+| Davies-Bouldin Index  | 0.5851 |
+| Beta CV measure | 0.2463 |
+
 ### A comparison of Hard and Soft Clustering Schemes
 
 ## Tournament Simulation with Grouping
