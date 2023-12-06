@@ -27,7 +27,7 @@ A tournament \\(\mathcal{T}(\boldsymbol{T},\boldsymbol{G},\boldsymbol{T_b})\\) i
 
 For match prediction, we use supervised classification models and evaluate it using all standard metrics like accuracy, precision, recall, F1-score and ROC-AUC. We do not have any bias towards optimizing false positives over true negatives and vice versa due to the nature of our problem.
 
-To evaluate our unsupervised clustering method for grouping of teams, we use clustering techniques and evaluate it using internal measures only. We do not take external measures because for our use case, there is no ground truth of groups. Even the groups FIFA assigns are using randomization across different pots. There can actually be multiple correct answers. So, the only evaluation we feel is necessary is how close are the groups. How we do this is described in detail in the following section.
+To evaluate our unsupervised clustering method for grouping of teams, we use clustering techniques and evaluate it using internal measures only. We do not take external measures because for our use case, there is no ground truth of groups. Even the groups FIFA assigns are using randomization across different pots. There can actually be multiple correct answers. So, the only evaluation we feel is necessary is how close are the groups. How we do this is described in detail later.
 
 ## 3.2. Overall Pipeline
 
@@ -205,58 +205,7 @@ From the above table, we can see that logistic regression outperforms all models
  <img src="./assets/images/roc_curve_lrada.png" alt="LRADAROC" width="350"/>
  </p>
 
-
-## 5.2. Impact of Forward Feature Selection on Match Outcome Prediction
-
-Forward feature selection is the iterative addition of features to the model one at a time. The process starts with an empty set of features and gradually incorporates the most relevant features based on certain criteria, in our case the increase in accuracy of the model based on the set of features being added. Post forward feature selection, we found the accuracy of each model to be drop by approximately 3-5%. Due to this, we did not move forward with employing this technique. A possible hypothesis and explanation for this behavior is that individual features had lesser contribution to the accuracy of the model, and were enforced by other features of the dataset, thus leading to better accuracy without forward feature selection.
-
-## 5.3. Impact of Principal Component Analysis on Match Outcome Prediction
-
-To analyze the impact of dimensionality reduction, we perform PCA on our features and run logistic regression and random forest on the features after doing PCA. After that, we select first five and first fifteen components and train the models using this data. The accuracy of each of these are given below -
-
-|Method              |n=5     |n=15    |raw features|
-|--------------------|--------|--------|------------|
-|Logistic Regression | 71.75% | 72.70% | 73.49%     |
-|Random Forest       | 72.76% | 72.53% | 71.69%     |
-
-Interestingly, the trend in both algorithms are opposite. With logistic regression, more features/components yield more accuracy and with random forest, the vice versa. This probably suggests that Logistic Regression, which was working optimally before starts to suffer when we reduce the dimensions as it gets less information, whereas Random Forest, which was probably over-fitting originally despite hyperparameter tuning now is able to better learn the representation with reducing dimensionality. However, even with n=5 (best case), it is not able to outperform logistic regression with raw features.
-
-## 5.4. Impact of Semi-supervised Learning on Match Outcome Prediction
-
-#### 5.4.1. Motivation and Procedure
-
-Given the infrequency of the World Cup occurring every four years, the limited availability of data points posed a challenge for traditional supervised learning approaches. To overcome this constraint, we were motivated to explore semi-supervised learning for our prediction model. This adaptive methodology allows us to make the most out of the available labeled data while efficiently incorporating the valuable information from unlabeled data, thereby enhancing the robustness and effectiveness of our predictive model.
-
-We implement semi-supervised learning [15] as described in section 4.2 on Logistic Regression and Random Forest and the results are below.
-
-#### 5.4.2. Semi-supervised vs Supervised Learning
-
-##### 5.4.2.1. Model Performance
-We analyze the performance of the various classification schemes on our dataset as shown below:
-
-| Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
-| ------------------ | -------- | --------- | ------ | --------- | ------- |
-| Logistic Regression (Supervised) | 73.49%   | 73.59%    | 73.49% | 73.49%    | 0.81    |
-| Logistic Regression (Semi Supervised) | 71.46%     | 71.92%     | 71.47%  | 71.37%      | 0.79    |
-| Random Forest (Supervised) | 71.69%   | 71.81%    | 71.69% | 71.68%    | 0.80    |
-| Random Forest (Semi Supervised)      | 71.65%     | 71.77%      | 71.55%   | 71.6%      | 0.77    |
-
-As we can see, there is no significant improvement in semi supervised learning over the supervised results. The possible reason is that these hyptohetical matches learn from a similar data representation and do not add a lot of variety to the dataset. Thus, only increasing the number of data points but not adding a lot of extra information probably impact the model slightly negatively. The confusion matrix and ROC curve for logistic regression supervised vs. semi-supervised are given below.
-
-
-##### 5.4.2.2. Confusion Matrix
-<p>
-  <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionSupervised" width="350"/>
-  <img src="./assets/images/semi_supervised/confusion_matrix_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
- </p>
-
-##### 5.4.2.3. ROC/AUC Curve
- <p>
-  <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionSupervised" width="350"/>
-  <img src="./assets/images/semi_supervised/roc_curve_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
- </p>
-
-## 5.5. Ensemble Classifier for Match Outcome Prediction
+## 5.2. Ensemble Classifier for Match Outcome Prediction
 
 We tried taking all the classifiers that we trained and create an ensemble using it. This did not require any training as we loaded all the trained models. Precisely, we took Support Vector Machines, Decision Trees, Logistic Regression, KNN and Gaussian Naive Bayes classifiers as they are widely different in nature and should cover a large scenarios. 
 
@@ -276,6 +225,58 @@ For prediction, we employed the technique of majority voting where the final pre
  </p>
 
  From the above, we can see that there was a slight improvement on the performance but not by a lot. This further shows that the correct and incorrect predictions across all models are largely the same and thus, the accuracies that we get are the maximum we can achieve using the available data and features.
+
+## 5.3. Impact of Forward Feature Selection on Match Outcome Prediction
+
+Forward feature selection is the iterative addition of features to the model one at a time. The process starts with an empty set of features and gradually incorporates the most relevant features based on certain criteria, in our case the increase in accuracy of the model based on the set of features being added. Post forward feature selection, we found the accuracy of each model to be drop by approximately 3-5%. Due to this, we did not move forward with employing this technique. A possible hypothesis and explanation for this behavior is that individual features had lesser contribution to the accuracy of the model, and were enforced by other features of the dataset, thus leading to better accuracy without forward feature selection.
+
+## 5.4. Impact of Principal Component Analysis on Match Outcome Prediction
+
+To analyze the impact of dimensionality reduction, we perform PCA on our features and run logistic regression and random forest on the features after doing PCA. After that, we select first five and first fifteen components and train the models using this data. The accuracy of each of these are given below -
+
+|Method              |n=5     |n=15    |raw features|
+|--------------------|--------|--------|------------|
+|Logistic Regression | 71.75% | 72.70% | 73.49%     |
+|Random Forest       | 72.76% | 72.53% | 71.69%     |
+
+Interestingly, the trend in both algorithms are opposite. With logistic regression, more features/components yield more accuracy and with random forest, the vice versa. This probably suggests that Logistic Regression, which was working optimally before starts to suffer when we reduce the dimensions as it gets less information, whereas Random Forest, which was probably over-fitting originally despite hyperparameter tuning now is able to better learn the representation with reducing dimensionality. However, even with n=5 (best case), it is not able to outperform logistic regression with raw features.
+
+## 5.5. Impact of Semi-supervised Learning on Match Outcome Prediction
+
+#### 5.5.1. Motivation and Procedure
+
+Given the infrequency of the World Cup occurring every four years, the limited availability of data points posed a challenge for traditional supervised learning approaches. To overcome this constraint, we were motivated to explore semi-supervised learning for our prediction model. This adaptive methodology allows us to make the most out of the available labeled data while efficiently incorporating the valuable information from unlabeled data, thereby enhancing the robustness and effectiveness of our predictive model.
+
+We implement semi-supervised learning [15] as described in section 4.2 on Logistic Regression and Random Forest and the results are below.
+
+#### 5.5.2. Semi-supervised vs Supervised Learning
+
+##### 5.452.1. Model Performance
+We analyze the performance of the various classification schemes on our dataset as shown below:
+
+| Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
+| ------------------ | -------- | --------- | ------ | --------- | ------- |
+| Logistic Regression (Supervised) | 73.49%   | 73.59%    | 73.49% | 73.49%    | 0.81    |
+| Logistic Regression (Semi Supervised) | 71.46%     | 71.92%     | 71.47%  | 71.37%      | 0.79    |
+| Random Forest (Supervised) | 71.69%   | 71.81%    | 71.69% | 71.68%    | 0.80    |
+| Random Forest (Semi Supervised)      | 71.65%     | 71.77%      | 71.55%   | 71.6%      | 0.77    |
+
+As we can see, there is no significant improvement in semi supervised learning over the supervised results. The possible reason is that these hyptohetical matches learn from a similar data representation and do not add a lot of variety to the dataset. Thus, only increasing the number of data points but not adding a lot of extra information probably impact the model slightly negatively. The confusion matrix and ROC curve for logistic regression supervised vs. semi-supervised are given below.
+
+
+##### 5.5.2.2. Confusion Matrix
+<p>
+  <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionSupervised" width="350"/>
+  <img src="./assets/images/semi_supervised/confusion_matrix_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
+ </p>
+
+##### 5.5.2.3. ROC/AUC Curve
+ <p>
+  <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionSupervised" width="350"/>
+  <img src="./assets/images/semi_supervised/roc_curve_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
+ </p>
+
+
 
 ## 5.6. Tournament Simulation of 2022 World Cup using Match Outcome Predictors
 
