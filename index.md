@@ -367,7 +367,7 @@ From here, we can see that likely performance of all models are similar, as also
 | Davies-Bouldin Index  | 0.5128 |
 | Beta CV measure | 0.2495 |
 
-In the evaluation of the calusterings, we only used internal measures because we don't have a ground truth to evaluate our external clustering measure. In addition, the objective of our clusters were not used to align to a external reference in the first place, it is to cluster the teams so that we can get a fairly distributed group to ensure that the game is fair. From the metrics we have obtained, we can see that the clusters we have gotten are compact and are well matched to their own clusters. 
+In the evaluation of the calusterings, we only used internal measures because we don't have a ground truth to evaluate our external clustering measure, the objective of our clusters was not to align a external reference in the first place, it was to cluster the teams so that we can get a fairly distributed group to ensure that the game is fair. In order to acheive this we want the clusters to be as compact as posssbible. From the metrics we have obtained, with a high Silhouette Score and low Beta CV measure, we can sure see that the clusters we have gotten are well matched to their own clusters, which can also be seen in the images. 
 
 ### Clustering Results (GMM)
 #### Images
