@@ -18,7 +18,7 @@ The problem of predicting game outcomes especially in Football (also called Socc
 
 # 3. Method Overview
 
-## 3.1 Problem Definition
+## 3.1. Problem Definition
 
 A tournament \\(\mathcal{T}(\boldsymbol{T},\boldsymbol{G},\boldsymbol{T_b})\\) is a set of teams \\(\boldsymbol{T}\\) participating in games \\(\boldsymbol{G}\\) (either a winner or tie (only in  group stage)) over stages \\(\boldsymbol{b} = 0,1,2,...\\) ,with a set of (\\(\boldsymbol{T_b}\\)) teams qualifying to play them. Our goal is:
 
@@ -29,7 +29,7 @@ For match prediction, we use supervised classification models and evaluate it us
 
 To evaluate our unsupervised clustering method for grouping of teams, we use clustering techniques and evaluate it using internal measures only. We do not take external measures because for our use case, there is no ground truth of groups. Even the groups FIFA assigns are using randomization across different pots. There can actually be multiple correct answers. So, the only evaluation we feel is necessary is how close are the groups. How we do this is described in detail in the following section.
 
-## 3.2 Overall Pipeline
+## 3.2. Overall Pipeline
 
 ![Overall Pipeline](./assets/images/pipeline.png)
 
@@ -37,7 +37,7 @@ The above figure represents the overall pipeline of our Tournament Simulator. Gi
 
 # 4. Implementation Details
 
-## 4.1 Dataset
+## 4.1. Dataset
 To train our models, we use the datasets listed below:
 - [Soccer World Cup Data (Kaggle)](https://www.kaggle.com/datasets/shilongzhuang/soccer-world-cup-challenge/)
 - [All International Matches (Kaggle)](https://www.kaggle.com/datasets/martj42/international-football-results-from-1872-to-2017?select=results.csv)
@@ -48,11 +48,11 @@ The dataset features are described in the following figure -
 
 Of these the datasets **All International Matches** and **FIFA World Rankings** are used to train and test our Machine Learning schemes ,while the dataset **Soccer World Cup Data** is used to prepare and run tournament simulations.
 
-#### 4.1.1 Data Cleaning
+#### 4.1.1. Data Cleaning
 
 We initially began with data from various types of matches, including individual matches in FIFA World Cups, qualifiers, friendlies and matches from other tournaments. However, this did not yield favorable accuracy in prediction. This was probably because teams don't play to their full strength, particularly in friendlies, so it probably adds up noise. Thus, based on our domain knowledge of the tournament, we reduced the dataset to consider only include individual matches in FIFA World Cups and qualifiers. This yielded better results across all our methods. We also cleaned the data by replacing the names of countries which were listed differently in history as compared to now or synchronized their names in the match dataset and the fifa ranking dataset(for example South Korean football team's name is Korea Republic), so that there is consistency across various datasets. Apart from that, there was no missing data in the dataset.
 
-#### 4.1.2 Feature Extraction
+#### 4.1.2. Feature Extraction
 
 To predict the outcomes, we first extract features for a match fixture using domain knowledge and correlation analysis. For the two teams playing, we take last \\(n_{ind}\\) individual matches in FIFA World Cups and qualifiers against any team. From this, we extract number of wins, goals scored (mean, std), goals conceded (mean, std), mean of rank difference of this team against oppositions played for each team [7]. Alongside this, we also take in the current rank of the teams. After this, we take last \\(n_{h2h}\\) matches against each other in the same category and extract difference in rank of the teams and mean, std of goals scored by both the teams. We also take a categorical variable of whether the match is at a neutral venue, and if it is a world cup match or a qualifier. Complete set of features are described in the table below. To get the target/outcome labels, we compare the goals scored for both teams in the match and if home_team scores more, we make the label = 1, otherwise 0. The following table summarizes the  chosen features.
 
@@ -64,7 +64,7 @@ We explicitly omit ties from our use case  because of the following two reasons 
 
 In the case of Unsupervised techniques for grouping of teams, we use the columns marked "Individual" with a few changes. We used rank of the team before the start of the world cup, mean and std of goals scored and conceded as features. There was no head-to-head in this scenario as we needed performance of each team individually to group them based on their potential.
 
-#### 4.1.3 Exploratory Data Analysis
+#### 4.1.3. Exploratory Data Analysis
 
 After extracting the features, we analyze our data as below.
 <p>
@@ -90,7 +90,7 @@ We particularly want to visualize the distribution of goals scored/conceded for 
 
 As we can see, these features are separable linearly at the tail ends on each side and have an overlap region in between where the outcome can not be determined by these features alone. This is where the ranking distributions and other features help. In head to head, the behavior is similar.
 
-## 4.2 Match Outcome Prediction - Supervised Classification
+## 4.2. Match Outcome Prediction - Supervised Classification
 
 Using features extracted as described in Section 4.1.2., we train a binary classifier using various algorithms. To start, we implement Logistic Regression [8], Support Vector Machines [9], Decision Tree [10] , Gaussian Naive Bayes [19] and K-Nearest Neighbours [18] which are simple, efficient and interpretable algorithms and then move to ensemble classifiers like Random Forest [11], Gradient Boost [12] and Adaptive Boosting [20] using Logistic Regression as base classifier to predict the probability of team labeled as home winning the match. We also create an 'Ensemble Classifier' which combines the tained models and makes inference by majority voting and returns the predicted probability for class labels as the average of all constituent models' and compare its performance with the others. In working with the classifier, we also experiment with forward feature selection [13] to select best features from the initial feature set, and also do Principal Component Analysis [14] to reduce the dimensionality of features. We tune all these methods by defining a search space and using Randomized Search followed by Grid Search using k-fold cross validation.
 
@@ -125,9 +125,9 @@ The reason to select these algorithms was our constraint of having four clusters
 
 # 5 Experiments
 
-## 5.1 Performance of Match Outcome Predictors
+## 5.1. Performance of Match Outcome Predictors
 
-### 5.1.1 Base Models
+### 5.1.1. Base Models
 
 We analyze the performance of the various classification schemes on our dataset using all standard metrics of evaluating a supervised learning algorithm. We primarily want to optimize the accuracy of the prediction, but since we have a balanced dataset and no bias towards avoiding either true negatives or false positives, we treat them fairly. Our final results are as shown below:
 
@@ -144,7 +144,7 @@ We analyze the performance of the various classification schemes on our dataset 
 
 From the above table, we can see that logistic regression outperforms all models with support vector machines a close second. On hyperparameter tuning using SVM, linear kernel was chosen which explains similar results of Logistic Regression and SVM. The value of C chosen was 0.007 for SVM and 0.01 for Logistic Regression. The slight difference can be explained by choices made by random search.
 
-### 5.1.2 Confusion Matrix
+### 5.1.2. Confusion Matrix
 
 <p>
   <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionCM" width="350"/>
@@ -165,7 +165,7 @@ From the above table, we can see that logistic regression outperforms all models
  </p>
 
 
-### 5.1.3 Learning Curve
+### 5.1.3. Learning Curve
 <p>
   <img src="./assets/images/learning_curve_logistic_regression.png" alt="LogisticRegressionCurve" width="350"/>
    <img src="./assets/images/learning_curve_svm.png" alt="SVMCurve" width="350"/>
@@ -186,7 +186,7 @@ From the above table, we can see that logistic regression outperforms all models
  </p>
 
 
-### 5.1.4 ROC/AUC Curve
+### 5.1.4. ROC/AUC Curve
 
 <p>
   <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionROC" width="350"/>
@@ -206,11 +206,11 @@ From the above table, we can see that logistic regression outperforms all models
  </p>
 
 
-## 5.2 Impact of Forward Feature Selection on Match Outcome Prediction
+## 5.2. Impact of Forward Feature Selection on Match Outcome Prediction
 
 Forward feature selection is the iterative addition of features to the model one at a time. The process starts with an empty set of features and gradually incorporates the most relevant features based on certain criteria, in our case the increase in accuracy of the model based on the set of features being added. Post forward feature selection, we found the accuracy of each model to be drop by approximately 3-5%. Due to this, we did not move forward with employing this technique. A possible hypothesis and explanation for this behavior is that individual features had lesser contribution to the accuracy of the model, and were enforced by other features of the dataset, thus leading to better accuracy without forward feature selection.
 
-## 5.3 Impact of Principal Component Analysis on Match Outcome Prediction
+## 5.3. Impact of Principal Component Analysis on Match Outcome Prediction
 
 To analyze the impact of dimensionality reduction, we perform PCA on our features and run logistic regression and random forest on the features after doing PCA. After that, we select first five and first fifteen components and train the models using this data. The accuracy of each of these are given below -
 
@@ -221,17 +221,17 @@ To analyze the impact of dimensionality reduction, we perform PCA on our feature
 
 Interestingly, the trend in both algorithms are opposite. With logistic regression, more features/components yield more accuracy and with random forest, the vice versa. This probably suggests that Logistic Regression, which was working optimally before starts to suffer when we reduce the dimensions as it gets less information, whereas Random Forest, which was probably over-fitting originally despite hyperparameter tuning now is able to better learn the representation with reducing dimensionality. However, even with n=5 (best case), it is not able to outperform logistic regression with raw features.
 
-## 5.4 Impact of Semi-supervised Learning on Match Outcome Prediction
+## 5.4. Impact of Semi-supervised Learning on Match Outcome Prediction
 
-#### 5.4.1 Motivation and Procedure
+#### 5.4.1. Motivation and Procedure
 
 Given the infrequency of the World Cup occurring every four years, the limited availability of data points posed a challenge for traditional supervised learning approaches. To overcome this constraint, we were motivated to explore semi-supervised learning for our prediction model. This adaptive methodology allows us to make the most out of the available labeled data while efficiently incorporating the valuable information from unlabeled data, thereby enhancing the robustness and effectiveness of our predictive model.
 
 We implement semi-supervised learning [15] as described in section 4.2 on Logistic Regression and Random Forest and the results are below.
 
-#### 5.4.2 Semi-supervised vs Supervised Learning
+#### 5.4.2. Semi-supervised vs Supervised Learning
 
-##### 5.4.2.1 Model Performance
+##### 5.4.2.1. Model Performance
 We analyze the performance of the various classification schemes on our dataset as shown below:
 
 | Technique          | Accuracy | Precision | Recall | F-1 score | ROC-AUC |
@@ -244,19 +244,19 @@ We analyze the performance of the various classification schemes on our dataset 
 As we can see, there is no significant improvement in semi supervised learning over the supervised results. The possible reason is that these hyptohetical matches learn from a similar data representation and do not add a lot of variety to the dataset. Thus, only increasing the number of data points but not adding a lot of extra information probably impact the model slightly negatively. The confusion matrix and ROC curve for logistic regression supervised vs. semi-supervised are given below.
 
 
-##### 5.4.2.2 Confusion Matrix
+##### 5.4.2.2. Confusion Matrix
 <p>
   <img src="./assets/images/confusion_matrix_lr.png" alt="LogisticRegressionSupervised" width="350"/>
   <img src="./assets/images/semi_supervised/confusion_matrix_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
  </p>
 
-##### 5.4.2.3 ROC/AUC Curve
+##### 5.4.2.3. ROC/AUC Curve
  <p>
   <img src="./assets/images/roc_curve_lr.png" alt="LogisticRegressionSupervised" width="350"/>
   <img src="./assets/images/semi_supervised/roc_curve_lr.png" alt="LogisticRegressionSemiSupervised" width="350"/>
  </p>
 
-## 5.5 Ensemble Classifier for Match Outcome Prediction
+## 5.5. Ensemble Classifier for Match Outcome Prediction
 
 We tried taking all the classifiers that we trained and create an ensemble using it. This did not require any training as we loaded all the trained models. Precisely, we took Support Vector Machines, Decision Trees, Logistic Regression, KNN and Gaussian Naive Bayes classifiers as they are widely different in nature and should cover a large scenarios. 
 
@@ -277,7 +277,7 @@ For prediction, we employed the technique of majority voting where the final pre
 
  From the above, we can see that there was a slight improvement on the performance but not by a lot. This further shows that the correct and incorrect predictions across all models are largely the same and thus, the accuracies that we get are the maximum we can achieve using the available data and features.
 
-## 5.6 Tournament Simulation of 2022 World Cup using Match Outcome Predictors
+## 5.6. Tournament Simulation of 2022 World Cup using Match Outcome Predictors
 
 ### 5.6.1 Tournament Schedule
 
@@ -341,7 +341,7 @@ We have analysed the results using 5 different models:
 
 From here, we can see that likely performance of all models are similar, as also indicated by the close performance scores. One reason why in reality Brazil did not win was because it lost to Croatia over penalty shootout on the given day. But, overall, it was a stronger team and more likely to win also. Argentina, the eventual winners are in the finals here as well. And, statistically, Brazil were a stronger team based on the features that we are using. So, in conclusion, we would say that our tournament predictor works well within error bounds.
 
-## 5.7 Evaluation of Clustering Techniques to Group the Teams
+## 5.7. Evaluation of Clustering Techniques to Group the Teams
 
 As mentioned before, we only used internal measures to evaluate clustering. The objective was to cluster the teams so that we can get a group where stronger teams are not together to ensure that later part of the tournament is more competitive. In order to acheive this we want the clusters to be as compact as posssbible so that they can be moved to different froups. So, we evaluate our clustering algorithms using Silhoutte Score, DB-Index and Beta-CV measure. The results are given below -
 
@@ -389,7 +389,7 @@ We used unsupervised machine learning models, Constrained K-Means and GMM, to cr
 
 For this, we generated 4 clusters with 8 teams each and picked one team from each cluster and put it to a group. The final results are displayed in the following section. 
 
-### 5.8.1 Grouping of Teams using Constrained K-Means
+### 5.8.1. Grouping of Teams using Constrained K-Means
 Following 8 FIFA groups were generated using KMeans:
 
 
@@ -411,7 +411,7 @@ Prediction using Logistic Regression:
 Prediction using Ensemble Model:
 <img src="./assets/images/tournament_ensemble_kmeans.png" alt="Ensemble model using KMeans Grouping" width="1200"/>
 
-### Grouping of Teams using GMM
+### 5.8.2. Grouping of Teams using GMM
 Following 8 FIFA groups were generated using GMM:
 
 
@@ -433,16 +433,16 @@ Prediction using Logistic Regression:
 Prediction using Ensemble Model:
 <img src="./assets/images/tournament_ensemble_gmm.png" alt="Ensemble model using Gaussian Mixture Model Grouping" width="1200"/>
 
-# 6 Scope for Improvement and Ideas for further exploration
+# 6. Scope for Improvement and Ideas for further exploration
 Based on our understanding we believe the following areas could be  explored further to improve our analysis and to also generate new ideas:
 1. Ties: Given our dataset we found that Ties/Draws are very difficult to predict with any reasonable accuracy. We can predict ties with a different approach, like predicting the number of goals scored by each teams than just the win/loss probability with additional datasets could we make a more informed/accurate predicition of ties. Also, in case a tie occurs, there should be ways to predict penalty shootouts using additional data.
 2. Team features using Player data*: For this project we extracted the relevant team features using past matches' data to understand/approximate the various defensive/offensive attributes a team might have.The same could be established via combining  the attributes of the relevant player(s).For example with everything remaining the same, a goalkeeper with a poor record may lower the defensive attributes of the team(this is not always desirable but sometimes forced because of injuries/other problems).Collating player data and using them to build team features is another area one could explore.
 
 Most of the ideas and techniques employed in our project could be applied to other team based sports and their tournaments as well with some modifications ,and hence it would be an interesting exercise to do a comparative analysis to gauge the relative performance of different ML algorithms on different team sports.
 
-# 7 Project Timeline and Responsibilities
+# 7. Project Timeline and Responsibilities
 
-## 7.1 Contributions from Mid-term to Final Submission
+## 7.1. Contributions from Mid-term to Final Submission
 
 | Team Member | Responsibility |
 |-------------|----------------|
