@@ -347,13 +347,14 @@ From here, we can see that likely performance of all models are similar, as also
 -- 2D/3D scatter plot with cluster results (preferably PCAd) --
 <p>
   <img src="./assets/images/cluster_eda/kmeans_visual cluster.png" alt="kmeans cluster visual" width="350"/>
+  <img src="./assets/images/cluster_eda/kmeans_visual goal_scored - goal_concede.png" alt="Mean Goal Scored - Mean Goal Conceded" width="350"/>
  </p>
  <p>
-  <img src="./assets/images/cluster_eda/kmeans_visual rank - win_count.png" alt="Rank - Win Count" width="350"/>
+  <img src="./assets/images/cluster_eda/kmeans_visual rank - mean_goal_concede.png" alt="Rank - Mean Goal Conceded" width="350"/>
   <img src="./assets/images/cluster_eda/kmeans_visual rank - mean_goal_score.png" alt="Rank - Mean Goal Scored" width="350"/>
  <p>
+  <img src="./assets/images/cluster_eda/kmeans_visual rank - win_count.png" alt="Rank - Win Count" width="350"/>
   <img src="./assets/images/cluster_eda/kmeans_visual goal_scored - win_count.png" alt="Mean Goal Scored - Win Count" width="350"/>
-  <img src="./assets/images/cluster_eda/kmeans_visual goal_scored - goal_concede.png" alt="Mean Goal Scored - Mean Goal Conceded" width="350"/>
  </p>
 
 | Metric | Value |
@@ -366,13 +367,14 @@ From here, we can see that likely performance of all models are similar, as also
 -- 2D/3D scatter plot with cluster results (preferably PCAd) --
  <p>
   <img src="./assets/images/cluster_eda/gmm_visual cluster.png" alt="gmm cluster visual" width="350"/>
+  <img src="./assets/images/cluster_eda/gmm_visual goal_scored - goal_concede.png" alt="Mean Goal Scored - Mean Goal Conceded" width="350"/>
  </p>
  <p>
-  <img src="./assets/images/cluster_eda/gmm_visual rank - win_count.png" alt="Rank - Win Count" width="350"/>
+  <img src="./assets/images/cluster_eda/gmm_visual rank - mean_goal_concede.png" alt="Rank - Mean Goal Conceded" width="350"/>
   <img src="./assets/images/cluster_eda/gmm_visual rank - mean_goal_score.png" alt="Rank - Mean Goal Scored" width="350"/>
  <p>
+  <img src="./assets/images/cluster_eda/gmm_visual rank - win_count.png" alt="Rank - Win Count" width="350"/>
   <img src="./assets/images/cluster_eda/gmm_visual goal_scored - win_count.png" alt="Mean Goal Scored - Win Count" width="350"/>
-  <img src="./assets/images/cluster_eda/gmm_visual goal_scored - goal_concede.png" alt="Mean Goal Scored - Mean Goal Conceded" width="350"/>
  </p>
 
 | Metric | Value |
