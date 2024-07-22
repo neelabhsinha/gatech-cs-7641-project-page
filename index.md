@@ -12,6 +12,8 @@ FIFA World Cup happens once in four years with 32 participating teams. First, 8 
 
 In this work, we predict the FIFA World Cup matches and attempt to propose a method to generate ideal grouping of teams for a balanced tournament using past match results and rankings which can be used to faciliate a tournament end-to-end. In summary, we use the data to generate and extract relevant features, and then use multiple supervised techniques to predict winner of a match. We implement multiple algorithms and do a thorough comparison of each of them. Apart from real data, we also explore creating fictitious matches and use semi-supervised learning in an attempt to improve the models. Alongside match predictions, we also use unsupervised clustering techniques to create groups that can facilitate a good tournament. Through these two processes, we create an end-to-end tool that can take in participating teams, build groups, predict results of matches and ultimately, predict a complete tournament.
 
+**Link to Implementation Code** - [https://github.com/neelabhsinha/fifa-world-cup-prediction-ml](https://github.com/neelabhsinha/fifa-world-cup-prediction-ml)
+
 # 2. Related Work
 
 The problem of predicting game outcomes especially in Football (also called Soccer in North America) is usually handled as a classification problem [4] [6]. Techniques ranging from logistic regression [4] to RNN/Deep Learning [6] have been employed for this task. Furthermore the problem of predicting outcome of a match is also extensible other team sports [1],[3] given usage of appropriate features. A comprehensive survey of the use of techniques across the various sports is described in [3].
